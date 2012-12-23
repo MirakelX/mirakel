@@ -1,5 +1,5 @@
 module ListsHelper
   def all_lists
-    List.all
+    current_user.lists
   end
 end

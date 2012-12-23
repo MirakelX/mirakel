@@ -14,4 +14,7 @@
 
 class Task < ActiveRecord::Base
   attr_accessible :content, :done, :due, :list_id, :name
+  belongs_to :list
+
+  validates :name, presence: true
 end

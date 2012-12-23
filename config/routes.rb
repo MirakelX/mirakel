@@ -1,8 +1,9 @@
 Mirakel::Application.routes.draw do
-  resources :tasks
-
-
-  resources :lists
+  resources :lists do
+    resources :tasks do 
+      post :toggle_done
+    end
+  end
 
 
   devise_for :users

@@ -8,3 +8,11 @@ en:
     hello: "Hello %{name}"
     profile: "Profile"
     sign_out: "Logout"
+  lists:
+    create: "New List"
+    create_success: "List was successfully created."
+    update_success: 'List was successfully updated.'
+  tasks:
+    update_success: 'Task was successfully updated.'
+    create_success: 'Task was successfully created.'
+    add: 'Add task to %{list}'

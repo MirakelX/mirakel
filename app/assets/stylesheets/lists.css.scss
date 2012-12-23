@@ -1,3 +1,22 @@
 // Place all the styles related to the Lists controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+#tasklist{
+  list-style-type:none;
+  margin: 0;
+  padding: 0;
+  li {
+    width: 100%;
+    background-color: #BBB;
+    padding: 10px;
+    margin: 2px ;
+  }
+  .delete-task {
+    float:right;
+  }
+}
+input.new-task{
+  margin: 5px;
+  padding:2px;
+  font-size:110%;
+}

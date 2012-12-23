@@ -11,4 +11,8 @@
 
 class List < ActiveRecord::Base
   attr_accessible :name, :user_id
+  has_many :tasks, foreign_key: "list_id"
+
+  validates :name, presence: true
+
 end

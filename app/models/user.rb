@@ -18,16 +18,28 @@
 #
 
 class User < ActiveRecord::Base
+  has_many :lists, foreign_key: 'user_id'
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
+  after_create :create_dumb
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me
   # attr_accessible :title, :body
   def username
     self.email
+  end
+
+  def create_dumb
+
+    l=self.lists.new
+    l.name='Inbox'
+    l.save
+    t=l.tasks.new
+    t.name='Your first task'
+    t.save
   end
 end

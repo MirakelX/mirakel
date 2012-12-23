@@ -1,0 +1,43 @@
+
+#sidebar {
+  width:300px;
+  background-color:#AAA;
+  position:absolute;
+  height:100%;
+  margin:0;
+  top:0;
+  left:0;
+  #title {
+    text-align:center;
+  }
+  #user-config {
+    list-style-type:none;
+    padding-left:10px;
+    height:40px;
+    li {
+      float:left;
+      padding: 0 5px;
+    }
+  }
+  #new-list {
+    display:block;
+    position:absolute;
+    bottom:0;
+    padding:5px 0;
+    text-align:center;
+    width:100%;
+  }
+  #lists {
+    display:block;
+    position:absolute;
+    list-style-type:none;
+    width:100%;
+    li {
+      width:100%;
+      a { 
+        display:block;
+        padding: 10px;
+      }
+    }
+  }
+}

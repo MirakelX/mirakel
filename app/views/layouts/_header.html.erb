@@ -1,0 +1,22 @@
+<aside id="sidebar">
+<h1 id="title"><%= link_to t('misc.appname'), root_path, id: "logo" %></h1>
+
+
+<nav id="user-config">
+<% if !(user_signed_in?) %>
+  <li><%= link_to t('users.sign_in'), new_user_session_path %></li>
+<%else%>
+  <li><%= t 'users.hello', name: current_user.username %></li>
+  <li><%= link_to t('users.profile'), edit_user_registration_path%></li>
+  <li><%= link_to t('users.sign_out'), destroy_user_session_path, :method => :delete%></li>
+</ul>
+</li>
+<%end%>
+</nav>
+<nav id="lists">
+<% all_lists.each do |list| %>
+  <li><%=link_to list.name, list %></li>
+  <% end %>
+</nav>
+<%= link_to t('lists.create'), new_list_path, id: 'new-list'%>
+</aside>

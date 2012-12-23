@@ -4,6 +4,7 @@ class ListsController < ApplicationController
   # GET /lists.json
   def index
     @lists = current_user.lists
+    authorize! :read, @lists
 
     respond_to do |format|
       format.html # index.html.erb
@@ -15,6 +16,7 @@ class ListsController < ApplicationController
   # GET /lists/1.json
   def show
     @list = current_user.lists.find(params[:id])
+    authorize! :read, @list
     @tasks = @list.tasks.all
 
     respond_to do |format|
@@ -28,6 +30,7 @@ class ListsController < ApplicationController
   # GET /lists/new.json
   def new
     @list = List.new
+    authorize! :create, @list
 
     respond_to do |format|
       format.html # new.html.erb
@@ -38,12 +41,14 @@ class ListsController < ApplicationController
   # GET /lists/1/edit
   def edit
     @list = current_user.lists.find(params[:id])
+    authorize! :update, @list
   end
 
   # POST /lists
   # POST /lists.json
   def create
     @list = current_user.lists.build(params[:list])
+    authorize! :create, @list
 
     respond_to do |format|
       if @list.save
@@ -60,6 +65,7 @@ class ListsController < ApplicationController
   # PUT /lists/1.json
   def update
     @list = current_user.lists.find(params[:id])
+    authorize! :update, @list
 
     respond_to do |format|
       if @list.update_attributes(params[:list])
@@ -76,6 +82,7 @@ class ListsController < ApplicationController
   # DELETE /lists/1.json
   def destroy
     @list = current_user.lists.find(params[:id])
+    authorize! :destroy, @list
     @list.destroy
 
     respond_to do |format|

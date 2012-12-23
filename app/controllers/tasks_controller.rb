@@ -4,6 +4,8 @@ class TasksController < ApplicationController
   # GET /tasks/1.json
   def show
     self.init
+    authorize! :read, @list
+    authorize! :read, @task
 
     respond_to do |format|
       format.html # show.html.erb
@@ -14,11 +16,15 @@ class TasksController < ApplicationController
   # GET /tasks/1/edit
   def edit
     self.init
+    authorize! :read, @list
+    authorize! :update, @task
   end
 
   def toggle_done
     @list = current_user.lists.find params[:list_id]
     @task = @list.tasks.find(params[:task_id])
+    authorize! :read, @list
+    authorize! :update, @task
     @task.done = !@task.done
     @task.save
     redirect_to list_path(@list)
@@ -29,6 +35,8 @@ class TasksController < ApplicationController
   def create
     @list = current_user.lists.find params[:list_id]
     @task = @list.tasks.build(params[:task])
+    authorize! :read, @list
+    authorize! :create, @task
 
     respond_to do |format|
       if @task.save
@@ -45,6 +53,8 @@ class TasksController < ApplicationController
   # PUT /tasks/1.json
   def update
     self.init
+    authorize! :read, @list
+    authorize! :update, @task
 
     respond_to do |format|
       if @task.update_attributes(params[:task])
@@ -62,6 +72,8 @@ class TasksController < ApplicationController
   def destroy
     @list = current_user.lists.find params[:list_id]
     @task = @list.tasks.find(params[:id])
+    authorize! :read, @list
+    authorize! :destroy, @task
     @task.destroy
 
     respond_to do |format|

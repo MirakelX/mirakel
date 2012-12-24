@@ -12,12 +12,12 @@ There will be soon a test-server where you can test Mirakel.
 
 Clone the Git-repository and run the following commands:
 
-  $ bundle install
-  $ rake db:migrate
+    $ bundle install
+    $ rake db:migrate
 
 Then you can run a server via
 
-  $ rails server
+    $ rails server
 
 ## Feedback
 

@@ -1,7 +1,6 @@
 <% provide :title, @list.name %>
 
 
-<%= link_to 'new', new_list_path %>
 <%= form_for([@list,@list.tasks.build]) do |f| %>
   <%= f.text_field :name, class: 'new-task', placeholder: t('tasks.add', list: @list.name) %>
 <% end %>
@@ -9,8 +8,8 @@
   <% @tasks.each do |task| %>
     <li>
     <%= link_to list_task_toggle_done_path(@list,task), method: 'post' do %>
-      <%= 'x' if task.done? %>
-      <%= '[]' unless task.done? %>
+      <%= '☑' if task.done? %>
+      <%= '☐' unless task.done? %>
     <% end %>
       <%= link_to task.name, edit_list_task_path(@list,task) %>
       <%= link_to t('tasks.delete'), list_task_path(@list,task), method: 'delete', class: 'delete-task' %>

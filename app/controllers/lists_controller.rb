@@ -3,11 +3,11 @@ class ListsController < ApplicationController
   # GET /lists
   # GET /lists.json
   def index
-    @lists = current_user.lists
-    authorize! :read, @lists
+    @lists = current_user.lists.all
+    authorize! :read, @lists.first
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html { redirect_to list_path(current_user.lists.first) }
       format.json { render json: @lists }
     end
   end

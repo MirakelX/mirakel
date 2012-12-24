@@ -12,6 +12,8 @@ en:
     create: "New List"
     create_success: "List was successfully created."
     update_success: 'List was successfully updated.'
+    delete: "Delete"
+    really_delete: "Do you really want to delete the List »%{name}«"
   tasks:
     update_success: 'Task was successfully updated.'
     create_success: 'Task was successfully created.'

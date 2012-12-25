@@ -1,5 +1,15 @@
 class TasksController < ApplicationController
   before_filter :authenticate_user!
+  def index
+    @list= current_user.lists.find params[:list_id]
+    respond_to do |format|
+      format.html { redirect_to list_path(@list) }
+      format.json do
+        @tasks= @list.tasks
+        render json: @tasks
+      end
+    end
+  end
   # GET /tasks/1
   # GET /tasks/1.json
   def show

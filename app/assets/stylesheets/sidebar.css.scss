@@ -1,7 +1,9 @@
-
+$sidebar-bg: #F7DFAC;
+$sidebar-hover: #FFDD96;
+$sidebar-border-color: #B49044;
 #sidebar {
   width:300px;
-  background-color:#F7DFAC;
+  background-color: $sidebar-bg;
   position:absolute;
   height:100%;
   margin:0;
@@ -22,22 +24,22 @@
       padding: 0 5px;
     }
   }
-  #new-list {
+  #new-list, #delete-list {
     display:block;
     position:absolute;
     bottom:0;
     padding:5px 0;
     text-align:center;
     width:50%;
+    border-top:1px solid #000;
+    &:hover {
+      background-color: $sidebar-hover;
+    }
+  }
+  #new-list {
     left:50%;
   }
   #delete-list {
-    display:block;
-    position:absolute;
-    bottom:0;
-    padding:5px 0;
-    text-align:center;
-    width:50%;
     left:0;
     border-right:1px solid #000;
   }
@@ -51,12 +53,15 @@
     overflow:auto;
     li {
       width:100%;
-      border-bottom: 1px dotted #B49044;
+      border-bottom: 1px dotted $sidebar-border-color;
       &.selected {
         background-color:#FFD273;
+        &:hover {
+          background-color: #ffcd62;
+        }
       }
       &:hover {
-        background-color: #FFDD96;
+        background-color: $sidebar-hover;
       }
       a { 
         display:block;

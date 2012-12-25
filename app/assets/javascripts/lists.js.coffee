@@ -11,7 +11,11 @@ Lists=
       (data) ->
         console.log data
         for list in data
-          $('#lists').append '<li id="list_'+list.id+'"><a href="/lists/'+list.id+'/">'+list.name+'</a></li>' unless $('#list_'+list.id).length>0
+          unless $('#list_'+list.id).length>0
+            $('#lists li:first-child').clone().attr('id','list_'+list.id).removeClass('selected').appendTo('#lists')
+            $('#list_'+list.id+' a').attr('href',Paths.list.replace(':id',list.id).replace('.json',''))
+            $('#list_'+list.id+' .name').text(list.name)
+            $('#list_'+list.id+' .count').text(0)
     )
   # Create an empty List
   create: ->
@@ -27,6 +31,13 @@ Lists=
     $('#list_edit_input').remove()
     $(Lists.current_edit).show()
     Lists.current_edit=null
+  edit: (name_span) ->
+    Lists.unedit() if(Lists.current_edit!=null)
+    Lists.current_edit=$(name_span)
+
+    $(name_span).parent().parent().prepend('<input type="text" id="list_edit_input" value="'+$(name_span).text()+'" />')
+    $('#list_edit_input').select()
+
   current_edit: null
 
 
@@ -50,7 +61,12 @@ $(->
 
         unless $(this).data('timer')
           $(this).data 'timer', setTimeout(
-            -> window.location = href
+            ->
+              window.location.href=href
+              $.get(
+                href+'.json'
+                (data) ->
+              )
             250
           )
         return false
@@ -65,13 +81,9 @@ $(->
 
         # Hide link
         $(name_span).hide()
+        Lists.edit(name_span)
 
         # Hide other Input–Fields
-        Lists.unedit() if(Lists.current_edit!=null)
-        Lists.current_edit=$(name_span)
-
-        $(this).parent().prepend('<input type="text" id="list_edit_input" value="'+$(name_span).text()+'" />')
-        $('#list_edit_input').focus()
 
         return false
   )

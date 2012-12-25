@@ -8,6 +8,8 @@ en:
     hello: "Hello %{name}"
     profile: "Profile"
     sign_out: "Logout"
+    sign_in: "Login"
+    register: "Register"
   lists:
     create: "New List"
     create_success: "List was successfully created."

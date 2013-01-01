@@ -1,18 +1,11 @@
 <% provide :title, @list.name %>
 
 
-<%= form_for([@list,@list.tasks.build]) do |f| %>
+<%= form_for([@list,@list.tasks.build], html: {listid: @list.id}) do |f| %>
   <%= f.text_field :name, class: 'new-task', placeholder: t('tasks.add', list: @list.name) %>
 <% end %>
-<ul id="tasklist">
-  <% @tasks.each do |task| %>
-    <li>
-    <%= link_to list_task_toggle_done_path(@list,task), method: 'post' do %>
-      <%= '☑' if task.done? %>
-      <%= '☐' unless task.done? %>
-    <% end %>
-      <%= link_to task.name, edit_list_task_path(@list,task) %>
-      <%= link_to t('tasks.delete'), list_task_path(@list,task), method: 'delete', class: 'delete-task' %>
-    </li>
-  <% end%>
-</ul>
+<div id="lists_box">
+  <%=render partial: 'tasklist' , locals: { tasks: @tasks }%>
+  <h3><%= t('tasks.completed') %></h3>
+  <%=render partial: 'tasklist' , locals: { tasks: @done_tasks }%>
+</div>

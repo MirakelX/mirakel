@@ -12,7 +12,7 @@
 <nav id="lists">
 <% all_lists.each do |list| %>
   <li <%= 'class=selected' if !@list.nil? && list.id==@list.id %> id="list_<%=list.id.to_s%>">
-  <%=link_to list_path(list) do%>
+  <%=link_to list_path(list), listid: list.id do%>
     <span class="name"><%= list.name %></span>
     <!--<span class="delete">x</span>-->
     <span class="count"><%= list.tasks.count %></span>

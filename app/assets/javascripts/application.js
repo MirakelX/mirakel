@@ -15,3 +15,5 @@
 //= require jquery_ujs
 //= require_tree .
 //= require js-routes
+//= require i18n
+//= require i18n/translations

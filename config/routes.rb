@@ -5,6 +5,8 @@ Mirakel::Application.routes.draw do
     end
   end
 
+  match '/thanks' => 'staticPages#thanks'
+
 
   devise_for :users
 

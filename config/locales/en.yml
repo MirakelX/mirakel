@@ -20,3 +20,6 @@ en:
     update_success: 'Task was successfully updated.'
     create_success: 'Task was successfully created.'
     add: 'Add task to %{list}'
+    save: 'Save'
+    abort: 'Abort'
+    completed: 'Completed'

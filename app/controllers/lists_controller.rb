@@ -17,7 +17,8 @@ class ListsController < ApplicationController
   def show
     @list = current_user.lists.find(params[:id])
     authorize! :read, @list
-    @tasks = @list.tasks.all
+    @tasks = @list.tasks.find_all_by_done(false)
+    @done_tasks = @list.tasks.find_all_by_done(true)
 
     respond_to do |format|
       format.html # show.html.erb

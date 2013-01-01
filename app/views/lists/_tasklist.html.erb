@@ -1,0 +1,14 @@
+<ul class="tasklist">
+  <% tasks.each do |task| %>
+    <li>
+    <%= link_to list_task_toggle_done_path(@list,task), method: 'post', class: 'task-toggle' do %>
+      <%= '☑' if task.done? %>
+      <%= '☐' unless task.done? %>
+    <% end %>
+      <a href="#" class="toggle-show">▸</a>
+      <%= link_to task.name, edit_list_task_path(@list,task), class: 'task-name' %>
+      <%= link_to t('tasks.delete'), list_task_path(@list,task), method: 'delete', class: 'delete-task' %>
+      <div class="task-content"><%=task.content%></div>
+    </li>
+  <% end%>
+</ul>

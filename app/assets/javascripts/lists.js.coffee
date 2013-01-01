@@ -69,13 +69,15 @@ Tasks=
         symbol='☑'
         done=':last-child'
 
+      console.log task.content
+      task.content=I18n.t('tasks.no_task_content') if task.content==null
+
 
       $('.tasklist' + done).append('<li>' +
         '<a href="' +Routes.list_task_toggle_done_path(Tasks.list_id,task)+'" data-method="post" class="task-toggle">'+ symbol + '</a> ' +
-        '<a href="#" class="toggle-show">▸</a> ' +
         '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'json'})+'" class="task-name">' + task.name +
         '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'json'})+'" class="delete-task">' + I18n.t('lists.delete') + '</a>' +
-        '<div class="task-content">'+task.content+'</div>' +
+        '<div class="task-content"><i>'+task.content+'</i></div>' +
         '</li>'
         )
   unedit:
@@ -167,14 +169,23 @@ $(->
 
         return false
   )
-  $('.tasklist li .toggle-show').live(
+  $('.tasklist li .task-name').live(
+    click:
+      ->
+        $(this).hide()
+        $(this).siblings('.task-toggle').after('<input type="text" id="task-edit-name" value="' + $(this).children('.task-name').text() + '" />')
+        $('#task-edit-name').data('edited',false).select()
+        return false
   )
   $('.tasklist li').live(
-    dblclick:
+    click:
       ->
-        $(this).children('.task-name').hide()
-        $(this).children('.toggle-show').after('<input type="text" id="task-edit-name" value="' + $(this).children('.task-name').text() + '" />')
-        $('#task-edit-name').data('edited',false).select()
+        if $(this).data('open')==true
+          $(this).children('.task-content').slideUp()
+          $(this).data('open',false)
+        else
+          $(this).children('.task-content').slideDown()
+          $(this).data('open',true)
         return false
   )
   $('#task-edit-name').live(
@@ -184,6 +195,9 @@ $(->
         Tasks.unedit()
   )
   $('.task-content').live(
+    click:
+      ->
+        return false
     dblclick:
       ->
         #        $(this).hide()
@@ -199,16 +213,4 @@ $(->
         )
         return false
   )
-'''  # Delete List
-  $('#lists li a .delete').live(
-    click: (e) ->
-      elem=$(this)
-      $.ajax {
-        url: Paths.list.replace(':id', $(this).parent().attr('id').replace 'list_', ''),
-          type: 'delete',
-          success: ->
-            $(elem).parent().remove()
-      }
-      return false
-    )'''
 )

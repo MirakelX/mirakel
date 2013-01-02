@@ -19,4 +19,20 @@ class List < ActiveRecord::Base
 
   validates :name, presence: true
 
+  # Creates an JSON-compatible tree
+  # Idea from http://stackoverflow.com/questions/9944005/how-to-generate-json-tree-from-ancestry
+  def self.json_tree(nodes)
+    nodes.map do |node, sub_nodes|
+      {
+        id: node.id,
+        name: node.name,
+        user_id: node.user_id,
+        created_at: node.created_at,
+        updated_at: node.updated_at,
+        children: json_tree(sub_nodes).compact
+      }
+    end
+    
+  end
+
 end

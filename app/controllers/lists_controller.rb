@@ -3,12 +3,13 @@ class ListsController < ApplicationController
   # GET /lists
   # GET /lists.json
   def index
-    @lists = current_user.lists.all
+    @lists = current_user.lists
     authorize! :read, @lists.first
+    @lists= @lists.arrange
 
     respond_to do |format|
       format.html { redirect_to list_path(current_user.lists.first) }
-      format.json { render json: @lists }
+      format.json { render json: List.json_tree(@lists) }
     end
   end
 
@@ -108,4 +109,4 @@ class ListsController < ApplicationController
     @list.move_to_child_of(move_to)
     render json: []
   end
-  end
+end

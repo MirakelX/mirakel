@@ -282,4 +282,5 @@ $(->
         )
         return false
   )
+  $.post(Routes.list_task_move_after_path(Tasks.list_id,16,17))
 )

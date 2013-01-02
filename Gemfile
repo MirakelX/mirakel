@@ -17,6 +17,7 @@ group :development do
 	gem 'annotate', '2.5.0'
 	# wirble macht die Konsole hübsch
 	gem 'wirble'
+  gem 'yaml_db'
 end
 
 # Gems used only for assets and not required

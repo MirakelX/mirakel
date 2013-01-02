@@ -32,3 +32,4 @@ pickle-email-*.html
 **.swp
 **.swo
 *.lock
+db/*.yml

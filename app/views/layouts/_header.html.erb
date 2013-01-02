@@ -10,7 +10,7 @@
 </li>
 </nav>
 <nav id="lists">
-<%= render_tree all_lists.arrange do |list, child| %>
+<%= render_tree all_lists do |list, child| %>
   <li <%= 'class=selected' if !@list.nil? && list.id==@list.id %> id="list_<%=list.id.to_s%>">
   <%=link_to list_path(list), listid: list.id do%>
     <span class="name"><%= list.name %></span>

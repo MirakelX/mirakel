@@ -10,13 +10,14 @@
 </li>
 </nav>
 <nav id="lists">
-<% all_lists.each do |list| %>
+<%= render_tree all_lists.arrange do |list, child| %>
   <li <%= 'class=selected' if !@list.nil? && list.id==@list.id %> id="list_<%=list.id.to_s%>">
   <%=link_to list_path(list), listid: list.id do%>
     <span class="name"><%= list.name %></span>
     <!--<span class="delete">x</span>-->
     <span class="count"><%= list.tasks.count %></span>
   <% end %>
+  <%=child%>
   </li>
 <% end %>
 </nav>

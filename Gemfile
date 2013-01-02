@@ -5,6 +5,7 @@ gem 'devise'
 gem 'cancan'
 gem 'js-routes'
 gem 'i18n-js'
+gem 'nested_set'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'

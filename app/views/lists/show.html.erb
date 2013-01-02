@@ -4,6 +4,7 @@
 <%= form_for([@list,@list.tasks.build], html: {listid: @list.id}) do |f| %>
   <%= f.text_field :name, class: 'new-task', placeholder: t('tasks.add', list: @list.name) %>
 <% end %>
+
 <div id="lists_box">
   <%=render partial: 'tasklist' , locals: { tasks: @tasks }%>
   <h3><%= t('tasks.completed') %></h3>

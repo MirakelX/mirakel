@@ -7,6 +7,9 @@
 #  user_id    :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  parent_id  :integer
+#  lft        :integer
+#  rgt        :integer
 #
 
 require 'test_helper'

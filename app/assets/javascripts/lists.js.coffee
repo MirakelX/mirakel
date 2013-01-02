@@ -70,14 +70,14 @@ Tasks=
         done=':last-child'
 
       console.log task.content
-      task.content=I18n.t('tasks.no_task_content') if task.content==null
+      task.content='<i>' + I18n.t('tasks.no_task_content') + '</i>' if task.content==null
 
 
       $('.tasklist' + done).append('<li taskid="'+task.id + '">' +
         '<a href="' +Routes.list_task_toggle_done_path(Tasks.list_id,task)+'" class="task-toggle">'+ symbol + '</a> ' +
         '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'json'})+'" class="task-name" taskid="' + task.id + '">' + task.name +
         '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'json'})+'" class="delete-task">' + I18n.t('tasks.delete') + '</a>' +
-        '<div class="task-content"><i>'+task.content+'</i></div>' +
+        '<div class="task-content">'+task.content+'</div>' +
         '</li>'
         )
   unedit:

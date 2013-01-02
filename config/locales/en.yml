@@ -24,3 +24,4 @@ en:
     abort: 'Abort'
     completed: 'Completed'
     no_task_content: 'Doubleclick to add a comment'
+    delete: 'Delete'

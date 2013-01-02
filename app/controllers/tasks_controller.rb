@@ -82,6 +82,7 @@ class TasksController < ApplicationController
   def destroy
     @list = current_user.lists.find params[:list_id]
     @task = @list.tasks.find(params[:id])
+    print '*'*50
     authorize! :read, @list
     authorize! :destroy, @task
     @task.destroy

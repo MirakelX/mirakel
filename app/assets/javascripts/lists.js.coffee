@@ -73,10 +73,10 @@ Tasks=
       task.content=I18n.t('tasks.no_task_content') if task.content==null
 
 
-      $('.tasklist' + done).append('<li>' +
-        '<a href="' +Routes.list_task_toggle_done_path(Tasks.list_id,task)+'" data-method="post" class="task-toggle">'+ symbol + '</a> ' +
-        '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'json'})+'" class="task-name">' + task.name +
-        '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'json'})+'" class="delete-task">' + I18n.t('lists.delete') + '</a>' +
+      $('.tasklist' + done).append('<li taskid="'+task.id + '">' +
+        '<a href="' +Routes.list_task_toggle_done_path(Tasks.list_id,task)+'" class="task-toggle">'+ symbol + '</a> ' +
+        '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'json'})+'" class="task-name" taskid="' + task.id + '">' + task.name +
+        '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'json'})+'" class="delete-task">' + I18n.t('tasks.delete') + '</a>' +
         '<div class="task-content"><i>'+task.content+'</i></div>' +
         '</li>'
         )
@@ -160,6 +160,7 @@ $(->
     submit:
       ->
         val=$('#task_name').val()
+        $('#task_name').val('')
 
         $.post(
           Routes.list_tasks_path(Tasks.list_id,{format:'json'})
@@ -173,10 +174,39 @@ $(->
     click:
       ->
         $(this).hide()
-        $(this).siblings('.task-toggle').after('<input type="text" id="task-edit-name" value="' + $(this).children('.task-name').text() + '" />')
+        $(this).siblings('.task-toggle').after('<input type="text" id="task-edit-name" value="' + $(this).siblings('.task-name').text() + '" />')
         $('#task-edit-name').data('edited',false).select()
         return false
   )
+  $('.tasklist li .task-toggle').removeAttr('data-method')
+  $('.tasklist li .task-toggle').live(
+    click: ->
+      $.post($(this).attr('href')+'.json')
+      if $(this).text()=='☐'
+        $(this).text('☑')
+        $(this).parent().appendTo('.tasklist:last-child')
+      else
+        $(this).text('☐')
+        $(this).parent().appendTo('.tasklist:first-child')
+      return false
+  )
+#  $('.tasklist li .delete-task').removeAttr('data-method')
+#  $('.tasklist li .delete-task').live(
+#    click: ->
+#      console.log 1
+#      elem=$(this)
+#      console.log 1
+#      $.ajax({
+#        url:$(elem).attr('href')
+#        type:'delete'
+#        success: ->
+#      })
+#      console.log 1
+#      console.log 1
+#      return false
+#        
+#  )
+
   $('.tasklist li').live(
     click:
       ->
@@ -193,6 +223,25 @@ $(->
       ->
         return if $(this).data('edited')
         Tasks.unedit()
+    click:
+      ->
+        return false
+    keypress:
+      (e) ->
+        $(this).data('edited',true)
+        return true unless e.which == 13
+        value=$(this).val()
+        elem=$(this)
+        console.log Routes.list_task_path(Tasks.list_id,$(elem).siblings('.task-name').attr('taskid'))
+        $.ajax {
+          url: Routes.list_task_path(Tasks.list_id,$(elem).siblings('.task-name').attr('taskid'))
+          type: 'put',
+          data: { task: {name: value }},
+          success: ->
+            $(elem).siblings('.task-name').text(value)
+            Tasks.unedit()
+          error: (data) -> alert 'An error occured while saving :(',
+        }
   )
   $('.task-content').live(
     click:
@@ -207,9 +256,23 @@ $(->
           '<input type="button" id="edit-task-content-submit" value="' + I18n.t('tasks.save') + '" />' +
           '<input type="button" id="edit-task-content-abort" value="' + I18n.t('tasks.abort') + '" />'
         )
+        $('#edit-task-content').select()
         $('#edit-task-content-abort').click(
           ->
             $(this).parent().text($(this).parent().data('text'))
+        )
+        $('#edit-task-content-submit').click(->
+          val=$('#edit-task-content').val()
+          id=$(this).parent().parent().attr('taskid')
+          elem=$(this)
+          $.ajax {
+            url: Routes.list_task_path(Tasks.list_id,id)
+            type: 'put',
+            data: { task: {content: val }},
+            success: ->
+              $(elem).parent().html(val)
+            error: (data) -> alert 'An error occured while saving :(',
+          }
         )
         return false
   )

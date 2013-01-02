@@ -97,6 +97,13 @@ $(->
       Lists.create()
       return false
   )
+  $('#lists ul').sortable(
+    update: (e,ui) ->
+      id=$(ui.item).prev().children('a').attr('listid')
+      if typeof(id)==undefined
+        id=null
+      $.post(Routes.list_move_after_path($(ui.item).children('a').attr('listid'),id))
+  )
 
   $('#lists li a').live(
     # Redirect only after 500 milliseconds

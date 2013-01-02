@@ -91,4 +91,21 @@ class ListsController < ApplicationController
       format.json { head :no_content }
     end
   end
-end
+
+  def move_after
+    @list= current_user.lists.find(params[:list_id])
+    if params[:id].nil?
+      move_to=current_user.lists.first
+    else
+      move_to=current_user.lists.find(params[:id])
+    end
+    @list.move_to_right_of(move_to)
+    render json: []
+  end
+  def move_in
+    @list= current_user.lists.find(params[:list_id])
+    move_to=current_user.lists.find(params[:id])
+    @list.move_to_child_of(move_to)
+    render json: []
+  end
+  end

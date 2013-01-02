@@ -69,6 +69,9 @@ $sidebar-border-color: #B49044;
       &:hover {
         background-color: $sidebar-hover;
       }
+      .draggable {
+        z-index:9999;
+      }
       a { 
         display:block;
         padding: 10px;

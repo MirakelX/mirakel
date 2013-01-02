@@ -7,7 +7,7 @@
     <% end %>
       <%= link_to task.name, edit_list_task_path(@list,task), class: 'task-name', taskid: task.id %>
       <%= link_to t('tasks.delete'), list_task_path(@list,task), method: 'delete', class: 'delete-task' , taskid: task.id%>
-      <div class="task-content"><% unless task.content.nil? %><%= task.content %><% else %><i><%= t('tasks.no_task_content') %></i><% end %></div>
+      <div class="task-content"><% unless task.content.nil? %><%= simple_format(task.content) %><% else %><i><%= t('tasks.no_task_content') %></i><% end %></div>
       </li>
     <% end%>
   </ul>

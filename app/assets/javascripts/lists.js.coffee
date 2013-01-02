@@ -2,7 +2,8 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
-
+nl2br= (str)->
+  return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br />' + '$2')
 Lists=
   # Update the Lists–List
   update: ->
@@ -12,7 +13,7 @@ Lists=
         for list in data
           # TODO The position of the new list-item should be the same as in the database
           unless $('#list_'+list.id).length>0
-            $('#lists li:first-child').clone().attr('id','list_'+list.id).removeClass('selected').appendTo('#lists')
+            $('#lists li:first-child').clone().attr('id','list_'+list.id).removeClass('selected').appendTo('#lists ul')
             $('#list_'+list.id+' a').attr('href',Routes.list_path(list.id,{format: 'html'})).attr('listid',list.id)
             $('#list_'+list.id+' .name').text(list.name)
             $('#list_'+list.id+' .count').text(0)
@@ -69,15 +70,14 @@ Tasks=
         symbol='☑'
         done=':last-child'
 
-      console.log task.content
       task.content='<i>' + I18n.t('tasks.no_task_content') + '</i>' if task.content==null
 
 
       $('.tasklist' + done).append('<li taskid="'+task.id + '">' +
         '<a href="' +Routes.list_task_toggle_done_path(Tasks.list_id,task)+'" class="task-toggle">'+ symbol + '</a> ' +
         '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'json'})+'" class="task-name" taskid="' + task.id + '">' + task.name +
-        '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'json'})+'" class="delete-task">' + I18n.t('tasks.delete') + '</a>' +
-        '<div class="task-content">'+task.content+'</div>' +
+        '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'json'})+'" data-method="delete" class="delete-task">' + I18n.t('tasks.delete') + '</a>' +
+        '<div class="task-content">'+nl2br(task.content)+'</div>' +
         '</li>'
         )
   unedit:
@@ -100,8 +100,8 @@ $(->
   $('#lists ul').sortable(
     update: (e,ui) ->
       id=$(ui.item).prev().children('a').attr('listid')
-      if typeof(id)==undefined
-        id=null
+      if typeof(id)=='undefined'
+        id=0
       $.post(Routes.list_move_after_path($(ui.item).children('a').attr('listid'),id))
   )
 
@@ -112,8 +112,6 @@ $(->
         href = $(this).attr('href')
         Tasks.list_id=$(this).attr('listid')
         list_name=$(this).children('.name').text()
-        console.log href
-        console.log $('.tasklist').length
         document.location.href = href unless $('.tasklist').length>0
         window.history.pushState(null, "Page title", Routes.list_path(Tasks.list_id,{format:'html'}))
         $.getJSON(
@@ -177,11 +175,14 @@ $(->
 
         return false
   )
+  $('input,textarea').live(
+    click: -> return false
+  )
   $('.tasklist li .task-name').live(
     click:
       ->
         $(this).hide()
-        $(this).siblings('.task-toggle').after('<input type="text" id="task-edit-name" value="' + $(this).siblings('.task-name').text() + '" />')
+        $(this).siblings('.task-toggle').after('<input type="text" id="task-edit-name" value="' + $(this).text() + '" />')
         $('#task-edit-name').data('edited',false).select()
         return false
   )
@@ -239,7 +240,6 @@ $(->
         return true unless e.which == 13
         value=$(this).val()
         elem=$(this)
-        console.log Routes.list_task_path(Tasks.list_id,$(elem).siblings('.task-name').attr('taskid'))
         $.ajax {
           url: Routes.list_task_path(Tasks.list_id,$(elem).siblings('.task-name').attr('taskid'))
           type: 'put',
@@ -253,9 +253,6 @@ $(->
   $('.task-content').live(
     click:
       ->
-        return false
-    dblclick:
-      ->
         #        $(this).hide()
         $('#edit-task-content').remove()
         $(this).data('text',$(this).text())
@@ -266,7 +263,8 @@ $(->
         $('#edit-task-content').select()
         $('#edit-task-content-abort').click(
           ->
-            $(this).parent().text($(this).parent().data('text'))
+            $(this).parent().html(nl2br($(this).parent().data('text')))
+            return false
         )
         $('#edit-task-content-submit').click(->
           val=$('#edit-task-content').val()
@@ -277,9 +275,10 @@ $(->
             type: 'put',
             data: { task: {content: val }},
             success: ->
-              $(elem).parent().html(val)
+              $(elem).parent().html(nl2br(val))
             error: (data) -> alert 'An error occured while saving :(',
           }
+          return false
         )
         return false
   )

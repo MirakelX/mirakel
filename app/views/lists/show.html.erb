@@ -6,7 +6,7 @@
 <% end %>
 
 <div id="lists_box">
-  <%=render partial: 'tasklist' , locals: { tasks: @tasks }%>
+  <%=render partial: 'tasklist' , locals: { tasks: @tasks, name: "undone" }%>
   <h3><%= t('tasks.completed') %></h3>
-  <%=render partial: 'tasklist' , locals: { tasks: @done_tasks }%>
+  <%=render partial: 'tasklist' , locals: { tasks: @done_tasks, name: "done" }%>
 </div>

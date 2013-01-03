@@ -74,9 +74,9 @@ Tasks=
 
 
       $('.tasklist' + done).append('<li taskid="'+task.id + '">' +
-        '<a href="' +Routes.list_task_toggle_done_path(Tasks.list_id,task)+'" class="task-toggle">'+ symbol + '</a> ' +
-        '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'json'})+'" class="task-name" taskid="' + task.id + '">' + task.name +
-        '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'json'})+'" data-method="delete" class="delete-task">' + I18n.t('tasks.delete') + '</a>' +
+        '<a href="' +Routes.list_task_toggle_done_path(Tasks.list_id,task,{format: 'html'})+'" class="task-toggle">'+ symbol + '</a> ' +
+        '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'html'})+'" class="task-name" taskid="' + task.id + '">' + task.name +
+        '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'html'})+'" data-method="delete" class="delete-task">' + I18n.t('tasks.delete') + '</a>' +
         '<div class="task-content">'+nl2br(task.content)+'</div>' +
         '</li>'
         )
@@ -189,13 +189,13 @@ $(->
   $('.tasklist li .task-toggle').removeAttr('data-method')
   $('.tasklist li .task-toggle').live(
     click: ->
-      $.post($(this).attr('href')+'.json')
-      if $(this).text()=='☐'
+      $.post(Routes.list_task_toggle_done_path(Tasks.list_id,$(this).parent().attr('taskid'),{format: 'html'}))
+      if $(this).parent().parent().hasClass('undone')
         $(this).text('☑')
-        $(this).parent().appendTo('.tasklist:last-child')
+        $(this).parent().appendTo('.tasklist.done')
       else
         $(this).text('☐')
-        $(this).parent().appendTo('.tasklist:first-child')
+        $(this).parent().appendTo('.tasklist.undone')
       return false
   )
 #  $('.tasklist li .delete-task').removeAttr('data-method')

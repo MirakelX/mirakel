@@ -175,7 +175,7 @@ $(->
 
         return false
   )
-  $('input,textarea').live(
+  $('.tasklist input,.tasklist textarea').live(
     click: -> return false
   )
   $('.tasklist li .task-name').live(

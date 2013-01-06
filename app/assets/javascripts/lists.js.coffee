@@ -294,15 +294,22 @@ $(->
   $('li .task-priority').live(
     mousemove: (e) ->
       offset = $(this).offset()
-      $('#priopopup').css(offset).show().data("task",$(this)).data('timer',true)
+      $('#priopopup').css(offset).show().data({
+        task: $(this)
+        timer: true
+        mouseover: false
+      })
       setTimeout(
         ->
           $('#priopopup').data('timer',false)
+          $('#priopopup').hide() unless $('#priopopup').data('mouseover')==true
         1000
       )
   )
   $('#priopopup').live(
-    mouseout: ->
+    mouseover: ->
+      $(this).data('mouseover',true)
+    mouseleave: ->
       $(this).hide() unless $(this).data('timer')
   )
   $('#priopopup a').live(

@@ -63,14 +63,15 @@
   border: 1px solid black;
   background-color: #FFF;
   li {
-	  width: 20px;
-	  height: 20px;
 	  display:block;
 	  margin: 1px;
-	  padding: 1px;
 	  cursor: pointer;
 	  a {
 		  color: #FFF;
+		  padding: 1px;
+		  display: block;
+		  width: 20px;
+		  height: 20px;
 	  }
 	  &:hover {
 		  text-decoration: underline;
@@ -78,22 +79,22 @@
   }
 }
 .tasklist,#priopopup {
-  .task-priority {
-    color: white;
-  }
-  .prio--2 {
-    background-color: green;
-  }
-  .prio--1 {
-    background-color: #00c400;
-  }
-  .prio-0 {
-    background-color: #3377FF;
-  }
-  .prio-1 {
-    background-color: #FF7700;
-  }
-  .prio-2 {
-    background-color: #FF3333;
-  }
+	.task-priority {
+		color: white;
+	}
+	.prio--2 {
+		background-color: green;
+	}
+	.prio--1 {
+		background-color: #00c400;
+	}
+	.prio-0 {
+		background-color: #3377FF;
+	}
+	.prio-1 {
+		background-color: #FF7700;
+	}
+	.prio-2 {
+		background-color: #FF3333;
+	}
 }

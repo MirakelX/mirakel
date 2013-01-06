@@ -6,7 +6,15 @@ You have the ability to run your own Mirakel-Server and sync your Client-Applica
 
 ## Try it
 
-There will be soon a test-server where you can test Mirakel.
+Here you can try Mirakel: http://mirakel.azapps.de/
+
+This application is still **alpha**. no guarantees are given for any functionality or data persistance.
+
+I will try to set up a good–working application, when Mirakel leaves the alpha-status.
+
+* Test-Account:
+* Email: test@example.com
+* Password: test123
 
 ## Install
 

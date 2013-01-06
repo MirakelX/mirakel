@@ -53,3 +53,47 @@
 		}
 	}
 }
+#priopopup {
+  position: absolute;
+  margin-left: -280px;
+  margin-top: -50px;
+  width: 24px;
+  height: 116px;
+  padding: 0;
+  border: 1px solid black;
+  background-color: #FFF;
+  li {
+	  width: 20px;
+	  height: 20px;
+	  display:block;
+	  margin: 1px;
+	  padding: 1px;
+	  cursor: pointer;
+	  a {
+		  color: #FFF;
+	  }
+	  &:hover {
+		  text-decoration: underline;
+	  }
+  }
+}
+.tasklist,#priopopup {
+  .task-priority {
+    color: white;
+  }
+  .prio--2 {
+    background-color: green;
+  }
+  .prio--1 {
+    background-color: #00c400;
+  }
+  .prio-0 {
+    background-color: #3377FF;
+  }
+  .prio-1 {
+    background-color: #FF7700;
+  }
+  .prio-2 {
+    background-color: #FF3333;
+  }
+}

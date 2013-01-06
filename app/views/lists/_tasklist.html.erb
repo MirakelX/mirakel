@@ -1,12 +1,25 @@
 <ul class="tasklist <%= name %>">
   <% tasks.each do |task| %>
+    <% 
+      prio=task.priority
+      if task.priority == 0 
+        symbol='±'
+      elsif task.priority > 0 
+        symbol='+'
+      else 
+        symbol='−'
+        prio*=-1
+      end 
+    %>
+
     <li taskid="<%= task.id %>">
     <%= link_to list_task_toggle_done_path(@list,task), method: 'post', class: 'task-toggle' do %>
       <%= task.done? ? '☑' : '☐' %>
     <% end %>
-      <%= link_to task.name, edit_list_task_path(@list,task), class: 'task-name', taskid: task.id %>
-      <%= link_to t('tasks.delete'), list_task_path(@list,task), method: 'delete', class: 'delete-task' , taskid: task.id%>
-      <div class="task-content"><% unless task.content.nil? %><%= simple_format(task.content) %><% else %><i><%= t('tasks.no_task_content') %></i><% end %></div>
-      </li>
-    <% end%>
-  </ul>
+    <%= link_to symbol + prio.to_s, '#', class: 'task-priority prio-'+ task.priority.to_s, taskid: task.id %>
+    <%= link_to task.name, edit_list_task_path(@list,task), class: 'task-name', taskid: task.id %>
+    <%= link_to t('tasks.delete'), list_task_path(@list,task), method: 'delete', class: 'delete-task' , taskid: task.id%>
+    <div class="task-content"><% unless task.content.nil? %><%= simple_format(task.content) %><% else %><i><%= t('tasks.no_task_content') %></i><% end %></div>
+    </li>
+  <% end%>
+</ul>

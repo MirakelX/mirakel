@@ -10,3 +10,11 @@
   <h3><%= t('tasks.completed') %></h3>
   <%=render partial: 'tasklist' , locals: { tasks: @done_tasks, name: "done" }%>
 </div>
+
+<ul id="priopopup" style="display:none">
+ <li class="prio-2 task-priority"><a href="#" val="2">+2</span>
+ <li class="prio-1 task-priority"><a href="#" val="1">+1</span>
+ <li class="prio-0 task-priority"><a href="#" val="0">&plusmn;0</span>
+ <li class="prio--1 task-priority"><a href="#" val="-1">&minus;1</span>
+  <li class="prio--2 task-priority"><a href="#" val="-2">&minus;2</span>
+</ul>

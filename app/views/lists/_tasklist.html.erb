@@ -1,5 +1,8 @@
 <ul class="tasklist <%= name %>">
   <% tasks.each do |task| %>
+		<% if params[:id]=="all"%>
+			<%@list=task.list%>
+		<%end%>
     <li taskid="<%= task.id %>">
     <%= link_to list_task_toggle_done_path(@list,task), method: 'post', class: 'task-toggle' do %>
       <%= task.done? ? '☑' : '☐' %>

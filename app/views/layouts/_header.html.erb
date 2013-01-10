@@ -10,7 +10,22 @@
 </li>
 </nav>
 <nav id="lists">
+<%shown_all=false%>
 <%= render_tree all_lists do |list, child| %>
+	<%if !shown_all%>
+		<%	task_count=0
+				shown_all=true
+				render_tree all_lists do |list|
+					task_count+=list.tasks.count
+				end	%>
+		<li id="all_lists">
+			<%=link_to list_path("all") do%>
+		  	<span class="name">All Lists</span>
+		  	<!--<span class="delete">x</span>-->
+		  	<span class="count"><%=task_count %></span>
+			<% end %>
+		</li>
+	<%end%>
   <li <%= 'class=selected' if !@list.nil? && list.id==@list.id %> id="list_<%=list.id.to_s%>">
   <%=link_to list_path(list), listid: list.id do%>
     <span class="name"><%= list.name %></span>
@@ -20,6 +35,7 @@
   <%=child%>
   </li>
 <% end %>
+
 </nav>
 <%= link_to t('lists.delete'), list_path(@list), method: 'delete', id: 'delete-list', data: { confirm: t('lists.really_delete', name: @list.name)} unless @list.nil? %>
 <%= link_to t('lists.create'), new_list_path, id: 'new-list'%>

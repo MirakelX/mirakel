@@ -16,15 +16,32 @@ class ListsController < ApplicationController
   # GET /lists/1
   # GET /lists/1.json
   def show
-    @list = current_user.lists.find(params[:id])
-    authorize! :read, @list
-    @tasks = @list.tasks.find_all_by_done(false)
-    @done_tasks = @list.tasks.find_all_by_done(true)
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @list }
+		if params[:id]=="all"
+			lists=current_user.lists
+			@tasks=Array.new(1)
+			@done_tasks=Array.new(1)
+			lists.each do |list|
+				@tasks=@tasks.concat(list.tasks.find_all_by_done(false))
+				@done_tasks=@done_tasks.concat(list.tasks.find_all_by_done(true))
+			end
+			@tasks=@tasks[1..-1]
+			@done_tasks=@done_tasks[1..-1]			
+			@fehler=false
+		else
+			begin
+		  	@list = current_user.lists.find(params[:id])
+				@fehler=false
+		  authorize! :read, @list
+		  @tasks = @list.tasks.find_all_by_done(false)
+		  @done_tasks = @list.tasks.find_all_by_done(true)
+			rescue
+				@fehler=true
+			end
     end
+		respond_to do |format|
+	    format.html # show.html.erb
+	    format.json { render json: @list }
+		end
   end
 
 

@@ -1,12 +1,19 @@
-<% provide :title, @list.name %>
+<%if !@fehler%>
+	<% if params[:id]!="all"%>
+		<% provide :title, @list.name %>
+		<%= form_for([@list,@list.tasks.build], html: {listid: @list.id}) do |f| %>
+			<%= f.text_field :name, class: 'new-task', placeholder: t('tasks.add', list: @list.name) %>
+		<% end %>
+	<%end%>
+	<div id="lists_box">
+		<%=render partial: 'tasklist' , locals: { tasks: @tasks, name: "undone" }%>
+		<h3><%= t('tasks.completed') %></h3>
+		<%=render partial: 'tasklist' , locals: { tasks: @done_tasks, name: "done" }%>
+	</div>
+	<% if params[:id]=="all"%>
+		<%#@list=@temp%>
+	<%end%>
+<%else%>
+	<%=render :text=>"Ungültiger Parameter"%>
+<%end%>
 
-
-<%= form_for([@list,@list.tasks.build], html: {listid: @list.id}) do |f| %>
-  <%= f.text_field :name, class: 'new-task', placeholder: t('tasks.add', list: @list.name) %>
-<% end %>
-
-<div id="lists_box">
-  <%=render partial: 'tasklist' , locals: { tasks: @tasks, name: "undone" }%>
-  <h3><%= t('tasks.completed') %></h3>
-  <%=render partial: 'tasklist' , locals: { tasks: @done_tasks, name: "done" }%>
-</div>

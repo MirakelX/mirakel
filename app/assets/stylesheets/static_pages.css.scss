@@ -1,3 +1,50 @@
 // Place all the styles related to the StaticPages controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+div#centered-box{
+	$hight: 150px;
+	$widht: 200px;
+	background: none repeat scroll 0 0 #CCCCCC;
+	border: 1px solid #666;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 1.2em;
+	color: #333;
+	position: absolute;
+	width: $widht;
+	height: $hight;
+	top: 33%;
+	left: 50%;
+	margin-top:-$hight/2;
+	margin-left:-$widht/2;
+	-moz-box-shadow:    3px 3px 5px 6px #ccc;
+  -webkit-box-shadow: 3px 3px 5px 6px #ccc;
+  box-shadow:         3px 3px 5px 6px #ccc;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+div#login_box{
+	$hight: 270px;
+	$widht: 330px;
+	background: none repeat scroll 0 0 #CCCCCC;
+	border: 1px solid #666;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 1.2em;
+	color: #333;
+	position: absolute;
+	width: $widht;
+	height: $hight;
+	top: 33%;
+	left: 50%;
+	margin-top:-$hight/2;
+	margin-left:-$widht/2;
+	-moz-box-shadow:    3px 3px 5px 6px #ccc;
+  -webkit-box-shadow: 3px 3px 5px 6px #ccc;
+  box-shadow:         3px 3px 5px 6px #ccc;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	padding: 10px
+}

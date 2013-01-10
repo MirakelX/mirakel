@@ -70,11 +70,20 @@ Tasks=
         symbol='☑'
         done=':last-child'
 
+      if task.priority == 0
+        prio_symbol='±'
+      else
+        if task.priority > 0
+          prio_symbol='+'
+        else
+          prio_symbol='−'
+
       task.content='<i>' + I18n.t('tasks.no_task_content') + '</i>' if task.content==null
 
 
       $('.tasklist' + done).append('<li taskid="'+task.id + '">' +
         '<a href="' +Routes.list_task_toggle_done_path(Tasks.list_id,task,{format: 'html'})+'" class="task-toggle">'+ symbol + '</a> ' +
+        '<a href="" class="task-priority prio-' + task.priority + '">' + prio_symbol + task.priority + '</a> ' +
         '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'html'})+'" class="task-name" taskid="' + task.id + '">' + task.name +
         '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'html'})+'" data-method="delete" class="delete-task">' + I18n.t('tasks.delete') + '</a>' +
         '<div class="task-content">'+nl2br(task.content)+'</div>' +
@@ -281,5 +290,40 @@ $(->
           return false
         )
         return false
+  )
+  $('li .task-priority').live(
+    mousemove: (e) ->
+      offset = $(this).offset()
+      $('#priopopup').css(offset).show().data({
+        task: $(this)
+        timer: true
+        mouseover: false
+      })
+      setTimeout(
+        ->
+          $('#priopopup').data('timer',false)
+          $('#priopopup').hide() unless $('#priopopup').data('mouseover')==true
+        1000
+      )
+  )
+  $('#priopopup').live(
+    mouseover: ->
+      $(this).data('mouseover',true)
+    mouseleave: ->
+      $(this).hide() unless $(this).data('timer')
+  )
+  $('#priopopup a').live(
+    click: (e) ->
+      elem=$('#priopopup').data('task')
+      id=$(elem).parent().attr('taskid')
+      $.ajax(
+        url: Routes.list_task_path(Tasks.list_id,id),
+        type: 'PUT',
+        data: {task: { priority: $(this).attr('val') }}
+      )
+      $('#priopopup').hide()
+      $(elem).text($(this).text()).attr('class',$(this).parent().attr('class'))
+
+      return false
   )
 )

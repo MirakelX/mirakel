@@ -1,19 +1,21 @@
 <%if !@fehler%>
 	<% if params[:id]!="all"%>
-		<% provide :title, @list.name %>
 		<%= form_for([@list,@list.tasks.build], html: {listid: @list.id}) do |f| %>
-			<%= f.text_field :name, class: 'new-task', placeholder: t('tasks.add', list: @list.name) %>
+		  <%= f.text_field :name, class: 'new-task', placeholder: t('tasks.add', list: @list.name) %>
 		<% end %>
 	<%end%>
 	<div id="lists_box">
-		<%=render partial: 'tasklist' , locals: { tasks: @tasks, name: "undone" }%>
-		<h3><%= t('tasks.completed') %></h3>
-		<%=render partial: 'tasklist' , locals: { tasks: @done_tasks, name: "done" }%>
+  	<%=render partial: 'tasklist' , locals: { tasks: @tasks, name: "undone" }%>
+  	<h3><%= t('tasks.completed') %></h3>
+  	<%=render partial: 'tasklist' , locals: { tasks: @done_tasks, name: "done" }%>
 	</div>
-	<% if params[:id]=="all"%>
-		<%#@list=@temp%>
-	<%end%>
+	<ul id="priopopup" style="display:none">
+  	<li class="prio-2 task-priority"><a href="#" val="2">+2</span>
+ 		<li class="prio-1 task-priority"><a href="#" val="1">+1</span>
+	  <li class="prio-0 task-priority"><a href="#" val="0">&plusmn;0</span>
+	  <li class="prio--1 task-priority"><a href="#" val="-1">&minus;1</span>
+  	<li class="prio--2 task-priority"><a href="#" val="-2">&minus;2</span>
+	</ul>
 <%else%>
 	<%=render :text=>"Ungültiger Parameter"%>
 <%end%>
-

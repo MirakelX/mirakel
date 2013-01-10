@@ -263,11 +263,11 @@ $(->
     click:
       ->
         #        $(this).hide()
-        $('#edit-task-content').remove()
+        $('#edit-task').html('<i>'+$('#edit-task-content').text()+'</i>')
         $(this).data('text',$(this).text())
-        $(this).html('<textarea id="edit-task-content">' + $(this).text() + '</textarea><br />' +
+        $(this).html('<div id="edit-task"><textarea id="edit-task-content">' + $(this).text() + '</textarea><br />' +
           '<input type="button" id="edit-task-content-submit" value="' + I18n.t('tasks.save') + '" />' +
-          '<input type="button" id="edit-task-content-abort" value="' + I18n.t('tasks.abort') + '" />'
+          '<input type="button" id="edit-task-content-abort" value="' + I18n.t('tasks.abort') + '" /></div>'
         )
         $('#edit-task-content').select()
         $('#edit-task-content-abort').click(

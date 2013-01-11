@@ -14,7 +14,7 @@
         prio*=-1
       end 
 		%>
-    <li taskid="<%= task.id %>">
+    <li taskid="<%= task.id %>" listid="<%=@list.id%>">
     <%= link_to list_task_toggle_done_path(@list,task), method: 'post', class: 'task-toggle' do %>
       <%= task.done? ? '☑' : '☐' %>
     <% end %>

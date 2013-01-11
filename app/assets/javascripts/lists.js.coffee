@@ -119,7 +119,7 @@ $(->
     click:
       ->
         href = $(this).attr('href')
-				#TODO fix all_lists
+				#TODO fix sidelist
         Tasks.list_id=$(this).attr('listid')
         list_name=$(this).children('.name').text()
         document.location.href = href unless $('.tasklist').length>0
@@ -199,7 +199,7 @@ $(->
   $('.tasklist li .task-toggle').removeAttr('data-method')
   $('.tasklist li .task-toggle').live(
     click: ->
-      $.post(Routes.list_task_toggle_done_path(Tasks.list_id,$(this).parent().attr('taskid'),{format: 'html'}))
+      $.post(Routes.list_task_toggle_done_path($(this).parent().attr('listid'),$(this).parent().attr('taskid'),{format: 'html'}))
       if $(this).parent().parent().hasClass('undone')
         $(this).text('☑')
         $(this).parent().appendTo('.tasklist.done')
@@ -251,7 +251,7 @@ $(->
         value=$(this).val()
         elem=$(this)
         $.ajax {
-          url: Routes.list_task_path(Tasks.list_id,$(elem).siblings('.task-name').attr('taskid'))
+          url: Routes.list_task_path($(elem).siblings('.task-name').attr('listid'),$(elem).siblings('.task-name').attr('taskid'))
           type: 'put',
           data: { task: {name: value }},
           success: ->
@@ -280,11 +280,10 @@ $(->
           id=$(this).parent().parent().parent().attr('taskid')
           elem=$(this)
           $.ajax {
-            url: Routes.list_task_path(Tasks.list_id,id)
+            url: Routes.list_task_path($(this).parent().parent().parent().attr('listid'),id)
             type: 'put',
             data: { task: {content: val }},
             success: -> $(this).parent().parent().html(nl2br(val)),
-								#$(this).parent().parent().text()=val,
             error: (data) -> alert 'An error occured while saving :(',
           }
           return false
@@ -317,7 +316,7 @@ $(->
       elem=$('#priopopup').data('task')
       id=$(elem).parent().attr('taskid')
       $.ajax(
-        url: Routes.list_task_path(Tasks.list_id,id),
+        url: Routes.list_task_path($(elem).parent().attr('listid'),id),
         type: 'PUT',
         data: {task: { priority: $(this).attr('val') }}
       )

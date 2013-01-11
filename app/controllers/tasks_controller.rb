@@ -31,7 +31,6 @@ class TasksController < ApplicationController
   end
 
   def toggle_done
-		<%if params[:id]!="all"%>
     @list = current_user.lists.find params[:list_id]
     @task = @list.tasks.find(params[:task_id])
     authorize! :read, @list
@@ -39,9 +38,6 @@ class TasksController < ApplicationController
     @task.done = !@task.done
     @task.save
     redirect_to list_path(@list)
-		<%else%>
-
-		<%end%>
   end
 
   # POST /tasks

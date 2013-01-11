@@ -119,6 +119,7 @@ $(->
     click:
       ->
         href = $(this).attr('href')
+				#TODO fix all_lists
         Tasks.list_id=$(this).attr('listid')
         list_name=$(this).children('.name').text()
         document.location.href = href unless $('.tasklist').length>0
@@ -270,21 +271,20 @@ $(->
           '<input type="button" id="edit-task-content-abort" value="' + I18n.t('tasks.abort') + '" /></div>'
         )
         $('#edit-task-content').select()
-        $('#edit-task-content-abort').click(
-          ->
-            $(this).parent().html(nl2br($(this).parent().data('text')))
+        $('#edit-task-content-abort').click(->
+            $(this).parent().parent().html(nl2br($(this).parent().parent().data('text')))
             return false
         )
         $('#edit-task-content-submit').click(->
           val=$('#edit-task-content').val()
-          id=$(this).parent().parent().attr('taskid')
+          id=$(this).parent().parent().parent().attr('taskid')
           elem=$(this)
           $.ajax {
             url: Routes.list_task_path(Tasks.list_id,id)
             type: 'put',
             data: { task: {content: val }},
-            success: ->
-              $(elem).parent().html(nl2br(val))
+            success: -> $(this).parent().parent().html(nl2br(val)),
+								#$(this).parent().parent().text()=val,
             error: (data) -> alert 'An error occured while saving :(',
           }
           return false

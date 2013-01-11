@@ -263,7 +263,7 @@ $(->
     click:
       ->
         #        $(this).hide()
-        $('#edit-task').html('<i>'+$('#edit-task-content').text()+'</i>')
+        $('#edit-task').parent().html('<i>'+$('#edit-task-content').text()+'</i>')
         $(this).data('text',$(this).text())
         $(this).html('<div id="edit-task"><textarea id="edit-task-content">' + $(this).text() + '</textarea><br />' +
           '<input type="button" id="edit-task-content-submit" value="' + I18n.t('tasks.save') + '" />' +

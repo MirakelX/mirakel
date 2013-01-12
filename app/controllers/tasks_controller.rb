@@ -1,6 +1,7 @@
 class TasksController < ApplicationController
   before_filter :authenticate_user!
   def index
+		if params[:list_id]!="all"
     @list= current_user.lists.find params[:list_id]
     respond_to do |format|
       format.html { redirect_to list_path(@list) }
@@ -9,6 +10,16 @@ class TasksController < ApplicationController
         render json: @tasks
       end
     end
+		else
+			@tasks=Array.new(1)
+			current_user.lists.each do |list|
+				@tasks=@tasks.concat(list.tasks)
+			end
+			respond_to do |format|
+    	  format.html {redirect_to list_path("all")}
+    	  format.json { render json: @tasks[1..-1] }
+			end
+		end
   end
   # GET /tasks/1
   # GET /tasks/1.json
@@ -94,7 +105,20 @@ class TasksController < ApplicationController
   end
 
   def init
-    @list = current_user.lists.find params[:list_id]
-    @task = @list.tasks.find(params[:id])
+		#@task=
+		begin
+    	@list = current_user.lists.find params[:list_id]
+    	@task = @list.tasks.find(params[:id])
+		rescue
+			current_user.lists.each do |list|
+				begin
+					@list=list
+		    	@task = @list.tasks.find(params[:id])
+					break
+				rescue
+				
+				end
+			end
+		end
   end
 end

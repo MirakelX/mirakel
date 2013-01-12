@@ -3,6 +3,10 @@
 		<%= form_for([@list,@list.tasks.build], html: {listid: @list.id}) do |f| %>
 		  <%= f.text_field :name, class: 'new-task', placeholder: t('tasks.add', list: @list.name) %>
 		<% end %>
+	<%else%>
+		<form method="post" listid="all" id="new_task" class="new_task" action="/lists/all/tasks.json" accept-charset="UTF-8" style="display:none"><div style="margin:0;padding:0;display:inline"><input type="hidden" value="✓" name="utf8"><input type="hidden" value="yghteQphs/MgwSE4StOB+OO0HuNJFG+Q/wVrULlIU60=" name="authenticity_token"></div>
+		  <input type="text" size="30" placeholder="Add task to All Lists" name="task[name]" id="task_name" class="new-task">
+		</form>
 	<%end%>
 	<div id="lists_box">
   	<%=render partial: 'tasklist' , locals: { tasks: @tasks, name: "undone" }%>

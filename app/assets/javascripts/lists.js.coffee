@@ -69,19 +69,18 @@ Tasks=
       if task.done==true
         symbol='☑'
         done=':last-child'
-
+			
       if task.priority == 0
         prio_symbol='±'
       else
         if task.priority > 0
           prio_symbol='+'
         else
-          prio_symbol='−'
-
+          prio_symbol=''
       task.content='<i>' + I18n.t('tasks.no_task_content') + '</i>' if task.content==null
 
 
-      $('.tasklist' + done).append('<li taskid="'+task.id + '">' +
+      $('.tasklist' + done).append('<li taskid="'+task.id + '" listid="'+Tasks.list_id+'">' +
         '<a href="' +Routes.list_task_toggle_done_path(Tasks.list_id,task,{format: 'html'})+'" class="task-toggle">'+ symbol + '</a> ' +
         '<a href="" class="task-priority prio-' + task.priority + '">' + prio_symbol + task.priority + '</a> ' +
         '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'html'})+'" class="task-name" taskid="' + task.id + '">' + task.name +
@@ -119,11 +118,11 @@ $(->
     click:
       ->
         href = $(this).attr('href')
-				#TODO fix sidelist
         Tasks.list_id=$(this).attr('listid')
         list_name=$(this).children('.name').text()
         document.location.href = href unless $('.tasklist').length>0
         window.history.pushState(null, "Page title", Routes.list_path(Tasks.list_id,{format:'html'}))
+        if $(this).attr('listid')=="all" then $('#new_task').hide() else $('#new_task').show()
         $.getJSON(
           Routes.list_tasks_path(Tasks.list_id)
           (data) ->
@@ -283,7 +282,7 @@ $(->
             url: Routes.list_task_path($(this).parent().parent().parent().attr('listid'),id)
             type: 'put',
             data: { task: {content: val }},
-            success: -> $(this).parent().parent().html(nl2br(val)),
+            success: -> $('#edit-task').parent().html('<i>'+val+'</i>'),
             error: (data) -> alert 'An error occured while saving :(',
           }
           return false

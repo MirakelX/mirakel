@@ -4,6 +4,8 @@
 
 nl2br= (str)->
   return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br />' + '$2')
+KeyboardState=Lists
+
 Lists=
   # Update the Lists–List
   update: ->
@@ -44,6 +46,24 @@ Lists=
     $('#list_edit_input').select()
 
   current_edit: null
+  down: ->
+    $('#lists li.selected').next().children('a').click()
+    #o=$('#lists li.selected').offset()
+    #$('#lists ul').scrollTop(o.top) if o.top>$('#lists ul').height()-75
+    return false
+  up: ->
+    $('#lists li.selected').prev().children('a').click()
+    return false
+  right: ->
+    KeyboardState=Tasks
+    console.log KeyboardState
+    console.log 'lala'
+    Tasks.setState()
+  left: -> null
+  space: -> null
+  enter: ->
+    $('#lists li.selected a').dblclick()
+    return false
 
 
 
@@ -93,10 +113,34 @@ Tasks=
     ->
       $('#task-edit-name').siblings('.task-name').show()
       $('#task-edit-name').remove()
+  setState: ->
+    $('.tasklist.undone li:first-child').addClass('selected')
+  down: ->
+    $('.tasklist li.selected').removeClass('selected').next().addClass('selected')
+  up: ->
+    $('.tasklist li.selected').removeClass('selected').prev().addClass('selected')
+  left: ->
+    KeyboardState=Lists
+    $('.tasklist li.selected').removeClass('selected')
+  space: ->
+    $('.tasklist li.selected a.task-toggle').click()
+  right: -> null
+  enter: (e) ->
+    return true if $('.tasklist li.selected a.task-name').css('display')=='none'
+    $('.tasklist li.selected').data('wait',true)
+    $('.tasklist li.selected a.task-name').click()
+    setTimeout(
+      ->
+        $('.tasklist li.selected').data('wait',false)
+      10
+    )
+
+
 
 
 # Live-Events
 $(->
+  KeyboardState=Lists
   Tasks.list_id=$('#new_task').attr('listid')
   Lists.update()
   # Create a new list
@@ -192,7 +236,7 @@ $(->
     click:
       ->
         $(this).hide()
-        $(this).siblings('.task-toggle').after('<input type="text" id="task-edit-name" value="' + $(this).text() + '" />')
+        $(this).siblings('.task-priority').after('<input type="text" id="task-edit-name" value="' + $(this).text() + '" />')
         $('#task-edit-name').data('edited',false).select()
         return false
   )
@@ -247,7 +291,10 @@ $(->
     keypress:
       (e) ->
         $(this).data('edited',true)
-        return true unless e.which == 13
+        return true unless e.which == 13 || $(this).parent().data('wait')!=true
+        if $(this).parent().data('wait')==true
+          $(this).parent().data('wait')
+          return false
         value=$(this).val()
         elem=$(this)
         $.ajax {
@@ -324,5 +371,19 @@ $(->
       $(elem).text($(this).text()).attr('class',$(this).parent().attr('class'))
 
       return false
+  )
+  $('body').live(
+    keydown: (e) ->
+      return  if $('input,textarea').is(':focus')
+	  console.log 'foo'
+      switch e.which
+        when 32 then KeyboardState.space(e)
+        when 37 then KeyboardState.left(e)
+        when 38 then KeyboardState.up(e)
+        when 39 then KeyboardState.right(e)
+        when 40 then KeyboardState.down(e)
+        when 13 then KeyboardState.enter(e)
+
+        else console.log e.which
   )
 )

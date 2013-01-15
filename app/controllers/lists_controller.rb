@@ -17,10 +17,9 @@ class ListsController < ApplicationController
   # GET /lists/1.json
   def show
 		if params[:id]=="all"
-			lists=current_user.lists
 			@tasks=Array.new(1)
 			@done_tasks=Array.new(1)
-			lists.each do |list|
+			current_user.lists.each do |list|
 				@tasks=@tasks.concat(list.tasks.find_all_by_done(false))
 				@done_tasks=@done_tasks.concat(list.tasks.find_all_by_done(true))
 			end

@@ -18,8 +18,8 @@
 				render_tree all_lists do |list|
 					task_count+=list.tasks.count
 				end	%>
-		<li id="all_lists">
-			<%=link_to list_path("all") do%>
+		<li id="list_all">
+			<%=link_to list_path("all"), listid: 'all' do%>
 		  	<span class="name">All Lists</span>
 		  	<!--<span class="delete">x</span>-->
 		  	<span class="count"><%=task_count %></span>

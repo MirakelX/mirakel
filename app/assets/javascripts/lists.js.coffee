@@ -38,7 +38,6 @@ Lists=
   edit: (name_span) ->
     Lists.unedit() if(Lists.current_edit!=null)
     Lists.current_edit=$(name_span)
-
     $(name_span).parent().parent().prepend('<input type="text" id="list_edit_input" value="'+$(name_span).text()+'" />')
     $('#list_edit_input').data('edited',false)
     $('#list_edit_input').select()
@@ -157,15 +156,19 @@ $(->
         $(this).data('edited',true)
         return true unless e.which == 13
         value=$(this).val()
-        $.ajax {
-          url: Paths.list.replace(':id', $(this).parent().attr('id').replace 'list_', ''),
-          type: 'put',
-          data: { list: {name: $(this).val() }},
-          success: ->
-            $(Lists.current_edit).text(value)
-            Lists.unedit()
-          error: (data) -> alert 'An error occured while saving :(',
-        }
+        if value.length>255
+          #TODO better error message
+           alert 'An error occured while saving :('
+        else          
+          $.ajax {
+            url: Paths.list.replace(':id', $(this).parent().attr('id').replace 'list_', ''),
+            type: 'put',
+            data: { list: {name: $(this).val() }},
+            success: ->
+              $(Lists.current_edit).text(value)
+              Lists.unedit()
+            error: (data) -> alert 'An error occured while saving :(',
+          }
     blur:
       ->
         return if $(this).data('edited')
@@ -249,16 +252,20 @@ $(->
         $(this).data('edited',true)
         return true unless e.which == 13
         value=$(this).val()
-        elem=$(this)
-        $.ajax {
-          url: Routes.list_task_path($(elem).siblings('.task-name').attr('listid'),$(elem).siblings('.task-name').attr('taskid'))
-          type: 'put',
-          data: { task: {name: value }},
-          success: ->
-            $(elem).siblings('.task-name').text(value)
-            Tasks.unedit()
-          error: (data) -> alert 'An error occured while saving :(',
-        }
+        if value.length>255
+          #TODO better error message
+          alert 'An error occured while saving :('
+        else
+          elem=$(this)
+          $.ajax {
+            url: Routes.list_task_path($(elem).siblings('.task-name').attr('listid'),$(elem).siblings('.task-name').attr('taskid'))
+            type: 'put',
+            data: { task: {name: value }},
+            success: ->
+              $(elem).siblings('.task-name').text(value)
+              Tasks.unedit()
+            error: (data) -> alert 'An error occured while saving :(',
+          }
   )
   $('.task-content').live(
     click:
@@ -277,15 +284,19 @@ $(->
         )
         $('#edit-task-content-submit').click(->
           val=$('#edit-task-content').val()
-          id=$(this).parent().parent().parent().attr('taskid')
-          elem=$(this)
-          $.ajax {
-            url: Routes.list_task_path($(this).parent().parent().parent().attr('listid'),id)
-            type: 'put',
-            data: { task: {content: val }},
-            success: -> $('#edit-task').parent().html('<i>'+val+'</i>'),
-            error: (data) -> alert 'An error occured while saving :(',
-          }
+          if val.length>255
+            #TODO better error message
+            alert 'An error occured while saving :('
+          else  
+            id=$(this).parent().parent().parent().attr('taskid')
+            elem=$(this)
+            $.ajax {
+              url: Routes.list_task_path($(this).parent().parent().parent().attr('listid'),id)
+              type: 'put',
+              data: { task: {content: val }},
+              success: -> $('#edit-task').parent().html('<i>'+val+'</i>'),
+              error: (data) -> alert 'An error occured while saving :(',
+            }
           return false
         )
         return false
@@ -348,8 +359,10 @@ $(->
     click: (e) ->
       if $(this).attr('val')=='sort_prio'
         prio=true
+        $('#sort-date').text('Priority')
       else if $(this).attr('val')=='sort_date'
         prio=false
+        $('#sort-date').text('Date')
       else
         console.error 'undefined value'
         return false
@@ -380,5 +393,27 @@ $(->
       $(this).data('mouseover',true)
     mouseleave: ->
       $(this).hide() unless $(this).data('timer')
+  )
+  $('#delete-list').live(
+    click:->
+      $('#list_'+Tasks.list_id).remove();
+      href = '/lists/all'
+      Tasks.list_id='all'
+      list_name='All Lists'
+      document.location.href = href unless $('.tasklist').length>0
+      window.history.pushState(null, "Page title", Routes.list_path(Tasks.list_id,{format:'html'}))
+      if $(this).attr('listid')=="all" then $('#new_task').hide() else $('#new_task').show()
+      $.getJSON(
+        Routes.list_tasks_path(Tasks.list_id)
+        (data) ->
+          $('.tasklist li').remove()
+          $('#new_task').attr('action',Routes.list_tasks_path(Tasks.list_id)).attr('listid',Tasks.list_id)
+          $('#delete-list').attr('href',Routes.list_path(Tasks.list_id),{format:'html'})
+          $('.selected').removeClass('selected')
+          $('#list_'+Tasks.list_id).addClass('selected')
+          $('.new-task').attr('placeholder',I18n.t('tasks.add',{list:list_name}))
+          for task in data
+            Tasks.append(task)
+      )
   )
 )

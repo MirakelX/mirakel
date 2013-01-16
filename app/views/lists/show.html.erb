@@ -8,7 +8,7 @@
 		  <input type="text" size="30" placeholder="Add task to All Lists" name="task[name]" id="task_name" class="new-task">
 		</form>
 	<%end%>
-	<a class="sort-list" id="sort-date" href="#">Datum</a>	
+	<a class="sort-list" id="sort-date" href="#">Date</a>	
 	<div id="lists_box">
   	<%=render partial: 'tasklist' , locals: { tasks: @tasks, name: "undone" }%>
   	<h3><%= t('tasks.completed') %></h3>
@@ -22,8 +22,8 @@
   	<li class="prio--2 task-priority"><a href="#" val="-2">&minus;2</a></li>
 	</ul>
 	<ul id="sortpopup" style="display:none;">
-		<li class="sort-list-entry"><a href="#" val="sort_prio">Priorit&auml;t</a></li>
-		<li class="sort-list-entry"><a href="#" val="sort_date">Datum</a></li>
+		<li class="sort-list-entry"><a href="#" val="sort_prio">Priority</a></li>
+		<li class="sort-list-entry"><a href="#" val="sort_date">Date</a></li>
 	</ul>
 <%else%>
 	<%=render :text=>"Ungültiger Parameter"%>

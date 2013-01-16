@@ -139,11 +139,12 @@ $(->
       # Edit List on Doubleclick 
     dblclick:
       ->
-        name_span=$(this).children('.name')
+        if $(this).attr('listid')!='all'
+          name_span=$(this).children('.name')
 
         # Hide link
-        $(name_span).hide()
-        Lists.edit(name_span)
+          $(name_span).hide()
+          Lists.edit(name_span)
 
         # Hide other Input–Fields
 
@@ -323,5 +324,61 @@ $(->
       $(elem).text($(this).text()).attr('class',$(this).parent().attr('class'))
 
       return false
+  )
+
+	$('.sort-list').live(
+    mousemove: (e) ->
+      offset = $(this).offset()
+      #TODO Fix this
+      offset.left-=55
+      offset.top+=25
+      $('#sortpopup').css(offset).show().data({
+        task: $(this)
+        timer: true
+        mouseover: false
+      })
+      setTimeout(
+        ->
+          $('#sortpopup').data('timer',false)
+          $('#sortpopup').hide() unless $('#sortpopup').data('mouseover')==true
+        1000
+      )
+  )
+	$('#sortpopup a').live(
+    click: (e) ->
+      if $(this).attr('val')=='sort_prio'
+        prio=true
+      else if $(this).attr('val')=='sort_date'
+        prio=false
+      else
+        console.error 'undefined value'
+        return false
+      href = $(location).attr('href')
+      list_name=$('#list_'+Tasks.list_id).children().children('.name').text()
+      $.getJSON(
+        Routes.list_tasks_path(Tasks.list_id)
+        (data) ->
+          $('.tasklist li').remove()
+          if prio
+            prio_counter=2
+            while prio_counter>-3
+              for task in data
+                if task.priority==prio_counter
+                  Tasks.append(task)
+              prio_counter-=1
+          else
+            #TODO implementiere sortierung nach datum, zurzeit einfach so wie in db
+            for task in data
+              Tasks.append(task)
+      )
+      $('#sortpopup').hide()
+      return false
+  )
+
+  $('#sortpopup').live(
+    mouseover: ->
+      $(this).data('mouseover',true)
+    mouseleave: ->
+      $(this).hide() unless $(this).data('timer')
   )
 )

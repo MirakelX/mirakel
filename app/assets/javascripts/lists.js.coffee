@@ -83,12 +83,13 @@ Tasks=
         '<a href="' +Routes.list_task_toggle_done_path(Tasks.list_id,task,{format: 'html'})+'" class="task-toggle">'+ symbol + '</a> ' +
         '<a href="" class="task-priority prio-' + task.priority + '">' + prio_symbol + task.priority + '</a> ' +
         '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'html'})+'" class="task-name" taskid="' + task.id + '">' + task.name +
-        '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'html'})+'" data-method="delete" class="delete-task">' + I18n.t('tasks.delete') + '</a>' +
+        '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'json'})+'" data-method="delete" class="delete-task">' + I18n.t('tasks.delete') + '</a>' +
         '<div class="task-content">'+nl2br(task.content)+'</div>' +
         '</li>'
         )
   unedit:
     ->
+      console.log ''#ohne die gehts irgendwie nicht
       $('#task-edit-name').siblings('.task-name').show()
       $('#task-edit-name').remove()
 
@@ -121,14 +122,20 @@ $(->
         list_name=$(this).children('.name').text()
         document.location.href = href unless $('.tasklist').length>0
         window.history.pushState(null, "Page title", Routes.list_path(Tasks.list_id,{format:'html'}))
-        if $(this).attr('listid')=="all" then $('#new_task').hide() else $('#new_task').show()
+        if $(this).attr('listid')=="all" 
+          $('#new_task').hide()
+          $('#delete-list').hide()
+        else 
+          $('#delete-list').show()
+          $('#new_task').show()
         $.getJSON(
           Routes.list_tasks_path(Tasks.list_id)
           (data) ->
             $('.tasklist li').remove()
             $('#new_task').attr('action',Routes.list_tasks_path(Tasks.list_id)).attr('listid',Tasks.list_id)
-            $('#delete-list').attr('href',Routes.list_path(Tasks.list_id),{format:'html'})
+            $('#delete-list').attr('href',Routes.list_path(Tasks.list_id),{format:'html'}).attr('data-confirm','Do you really want to delete the List »'+list_name+'«')
             $('.selected').removeClass('selected')
+            $('#list_'+Tasks.list_id).children().children('.count').text(data.length)
             $('#list_'+Tasks.list_id).addClass('selected')
             $('.new-task').attr('placeholder',I18n.t('tasks.add',{list:list_name}))
             for task in data
@@ -185,7 +192,8 @@ $(->
           { task: {name: val }}
           -> Tasks.update()
         )
-
+        $('#list_'+Tasks.list_id).children().children('.count').text($('#list_'+Tasks.list_id).children().children('.count').text()-(-1))
+        $('#list_all').children().children('.count').text($('#list_all').children().children('.count').text()-(-1))
         return false
   )
   $('.tasklist input,.tasklist textarea').live(
@@ -211,22 +219,31 @@ $(->
         $(this).parent().appendTo('.tasklist.undone')
       return false
   )
-#  $('.tasklist li .delete-task').removeAttr('data-method')
-#  $('.tasklist li .delete-task').live(
-#    click: ->
-#      console.log 1
-#      elem=$(this)
-#      console.log 1
-#      $.ajax({
-#        url:$(elem).attr('href')
-#        type:'delete'
-#        success: ->
-#      })
-#      console.log 1
-#      console.log 1
-#      return false
-#        
-#  )
+  $('.tasklist li .delete-task').removeAttr('data-method')
+  $('.tasklist li .delete-task').live(
+    click: ->
+      href=$(this).attr('href')
+      if (index=href.indexOf '.html')!=-1
+        href=href.substr 0, index
+      href+='.json'
+      console.log href
+      $.ajax({
+        url: href
+        type:'delete'
+        dataType: 'json'
+        success: ->
+          
+        error:->
+          
+      })
+      $(this).parent().remove()
+      $('#list_'+Tasks.list_id).children().children('.count').text($('#list_'+Tasks.list_id).children().children('.count').text()-1)
+      if Tasks.list_id!='all'
+        $('#list_all').children().children('.count').text($('#list_all').children().children('.count').text()-1)
+      else
+        #TODO
+      return false        
+  )
 
   $('.tasklist li').live(
     click:
@@ -256,9 +273,10 @@ $(->
           #TODO better error message
           alert 'An error occured while saving :('
         else
+          console.log Tasks.list_id
           elem=$(this)
           $.ajax {
-            url: Routes.list_task_path($(elem).siblings('.task-name').attr('listid'),$(elem).siblings('.task-name').attr('taskid'))
+            url: Routes.list_task_path(Tasks.list_id,$(elem).siblings('.task-name').attr('taskid'))
             type: 'put',
             data: { task: {name: value }},
             success: ->
@@ -271,7 +289,7 @@ $(->
     click:
       ->
         #        $(this).hide()
-        $('#edit-task').parent().html('<i>'+$('#edit-task-content').text()+'</i>')
+        $('#edit-task').parent().html('<i>'+nl2br $('#edit-task-content').text()+'</i>')
         $(this).data('text',$(this).text())
         $(this).html('<div id="edit-task"><textarea id="edit-task-content">' + $(this).text() + '</textarea><br />' +
           '<input type="button" id="edit-task-content-submit" value="' + I18n.t('tasks.save') + '" />' +
@@ -284,6 +302,7 @@ $(->
         )
         $('#edit-task-content-submit').click(->
           val=$('#edit-task-content').val()
+          val= val.trim()
           if val.length>255
             #TODO better error message
             alert 'An error occured while saving :('
@@ -294,7 +313,7 @@ $(->
               url: Routes.list_task_path($(this).parent().parent().parent().attr('listid'),id)
               type: 'put',
               data: { task: {content: val }},
-              success: -> $('#edit-task').parent().html('<i>'+val+'</i>'),
+              success: -> $('#edit-task').parent().html('<i>'+nl2br val+'</i>'),
               error: (data) -> alert 'An error occured while saving :(',
             }
           return false
@@ -402,7 +421,7 @@ $(->
       list_name='All Lists'
       document.location.href = href unless $('.tasklist').length>0
       window.history.pushState(null, "Page title", Routes.list_path(Tasks.list_id,{format:'html'}))
-      if $(this).attr('listid')=="all" then $('#new_task').hide() else $('#new_task').show()
+      $('#new_task').hide()
       $.getJSON(
         Routes.list_tasks_path(Tasks.list_id)
         (data) ->

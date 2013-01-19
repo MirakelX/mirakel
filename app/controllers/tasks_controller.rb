@@ -91,15 +91,27 @@ class TasksController < ApplicationController
   # DELETE /tasks/1
   # DELETE /tasks/1.json
   def destroy
-    @list = current_user.lists.find params[:list_id]
-    @task = @list.tasks.find(params[:id])
-    print '*'*50
+		begin
+	    @list = current_user.lists.find params[:list_id]
+    	@task = @list.tasks.find(params[:id])
+		rescue
+			current_user.lists.each do |list|
+				begin
+					@list=list
+		    	@task = @list.tasks.find(params[:id])
+					break
+				rescue
+				
+				end
+			end
+		end
+    #print '*'*50
     authorize! :read, @list
     authorize! :destroy, @task
     @task.destroy
 
     respond_to do |format|
-      format.html { redirect_to list_path(@list) }
+     # format.html { render :test=>''}#redirect_to list_path(@list) }
       format.json { head :no_content }
     end
   end

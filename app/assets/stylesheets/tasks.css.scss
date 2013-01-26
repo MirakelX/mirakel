@@ -102,3 +102,29 @@
 		background-color: #FF3333;
 	}
 }
+
+.sort-list{
+	background: green;
+	float:right;
+	margin-top:5px;
+  margin-right: 100px;
+	padding: 10px;
+	
+}
+#sortpopup
+{
+		background-color: #FFFFFF;
+    border: 1px solid black;
+    height: 40px;
+    margin-left: -250px;
+    padding: 0;
+    position: absolute;
+    width: 75px;
+		list-style-type: none;
+}
+.new_task{
+	float:left;
+}
+.sort-list-entry{
+	border: 1px solid black;
+}

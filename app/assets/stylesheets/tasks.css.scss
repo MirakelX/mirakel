@@ -16,7 +16,11 @@
 		padding: 10px;
 		border-radius:5px;
 		box-shadow:1px 1px 2px #888;
+    overflow:hidden;
 		cursor: pointer;
+    .task-due{
+      left: 75%;
+    }
 		.delete-task {
 			float:right;
 		}

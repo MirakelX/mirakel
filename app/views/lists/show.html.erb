@@ -1,14 +1,14 @@
 <%if !@fehler%>
-	<% if params[:id]!="all"%>
-		<%= form_for([@list,@list.tasks.build], html: {listid: @list.id}) do |f| %>
-		  <%= f.text_field :name, class: 'new-task', placeholder: t('tasks.add', list: @list.name) %>
-		<% end %>
-	<%else%>
-		<form method="post" listid="all" id="new_task" class="new_task" action="/lists/all/tasks.json" accept-charset="UTF-8" style="display:none"><div style="margin:0;padding:0;display:inline"><input type="hidden" value="✓" name="utf8"><input type="hidden" value="yghteQphs/MgwSE4StOB+OO0HuNJFG+Q/wVrULlIU60=" name="authenticity_token"></div>
-		  <input type="text" size="30" placeholder="Add task to All Lists" name="task[name]" id="task_name" class="new-task">
-		</form>
-	<%end%>
-	<a class="sort-list" id="sort-date" href="#">Date</a>	
+  <%if params[:id]=="all"%>
+    <%style="display:none;"%>
+  <%end%>
+	<form method="post" listid="<%=params[:id]%>" id="new_task" class="new_task" action="/lists/<%=params[:id]%>/tasks.json" accept-charset="UTF-8" style="<%=style%>"><div style="margin:0;padding:0;display:inline"><input type="hidden" value="✓" name="utf8"><input type="hidden" value="yghteQphs/MgwSE4StOB+OO0HuNJFG+Q/wVrULlIU60=" name="authenticity_token"></div>
+	  <input type="text" size="30" placeholder="Add task to All Lists" name="task[name]" id="task_name" class="new-task"\>
+    <input type="text" size="25" placeholder="due-Date" name="task[due]" id="task_due" class="new-task" style="display:none"\>
+    <input type="submit" id='btn_new_task' style="display:none" value=" Absenden ">
+	</form>
+
+	<a class="sort-list" id="sort-date" href="#">Normal</a>	
 	<div id="lists_box">
   	<%=render partial: 'tasklist' , locals: { tasks: @tasks, name: "undone" }%>
   	<h3><%= t('tasks.completed') %></h3>
@@ -24,6 +24,7 @@
 	<ul id="sortpopup" style="display:none;">
 		<li class="sort-list-entry"><a href="#" val="sort_prio">Priority</a></li>
 		<li class="sort-list-entry"><a href="#" val="sort_date">Date</a></li>
+    <li class="sort-list-entry"><a href="#" val="sort_normal">Normal</a></li>
 	</ul>
 <%else%>
 	<%=render :text=>"Ungültiger Parameter"%>

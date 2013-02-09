@@ -44,7 +44,6 @@ Lists=
 
   current_edit: null
 
-$ -> $('#task_due').datepicker({ dateFormat: 'yy-mm-dd' })
 
 #Tasks
 Tasks=
@@ -79,30 +78,29 @@ Tasks=
       if task.due==null
         date_text=''
       else
-        date_text=$.datepicker.formatDate('d M yy', new Date(task.due))
+        date_text=$.datepicker.formatDate(I18n.t('date.formats.js'), new Date(task.due))
       $('.tasklist' + done).append('<li taskid="'+task.id + '" listid="'+Tasks.list_id+'">' +
         '<a href="' +Routes.list_task_toggle_done_path(Tasks.list_id,task,{format: 'html'})+'" class="task-toggle">'+ symbol + '</a> ' +
         '<a href="" class="task-priority prio-' + task.priority + '">' + prio_symbol + task.priority + '</a> ' +
-        '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'html'})+'" class="task-name" taskid="' + task.id + '">' + task.name +
-        ' <a href="" class="task-due" date="'+task.due+'">'+date_text+
+        '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'html'})+'" class="task-name" taskid="' + task.id + '">' + task.name + '</a>'+
+        '<span class="right">'+
+        '<input type="text" class="task-due" value="' + date_text + '" />' +
         '<a href="'+Routes.list_task_path(Tasks.list_id,task,{format: 'json'})+'" data-method="delete" class="delete-task">' + I18n.t('tasks.delete') + '</a>' +
+        '</span>' +
         '<div class="task-content">'+nl2br(task.content)+'</div>' +
         '</li>'
         )
+      $('.task-due').datepicker({ dateFormat: I18n.t('date.formats.js') })
   unedit:
     ->
       console.log ''#ohne die gehts irgendwie nicht
       $('#task-edit-name').siblings('.task-name').show()
       $('#task-edit-name').remove()
-  unedit_due:
-    ->
-      #console.log ''#ohne die gehts irgendwie nicht
-      $('#task-edit-due').siblings('.task-due').show()
-      $('#task-edit-due').remove()
 
 
 # Live-Events
 $(->
+  $('.task-due').datepicker({ dateFormat: I18n.t('date.formats.js') })
   Tasks.list_id=$('#new_task').attr('listid')
   Lists.update()
   # Create a new list
@@ -191,12 +189,6 @@ $(->
         return if $(this).data('edited')
         Lists.unedit()
   )
-  $('#task_name').live(
-    click:
-      ->
-        $('#task_due').show()
-        $('#btn_new_task').show()
-  )
   $('#new_task').live(
     blur:
       ->
@@ -206,14 +198,13 @@ $(->
       ->
         val=$('#task_name').val()
         $('#task_name').val('')
-        date=$('#task_due').val()
-        $('#task_due').val('')
-        $('#task_due').hide()
         $('#btn_new_task').hide()
         #console.log date
         $.post(
           Routes.list_tasks_path(Tasks.list_id,{format:'json'})
-          { task: {name: val ,due: date}}
+          {
+            task: {name: val}
+          }
           -> Tasks.update()
         )
         $('#list_'+Tasks.list_id).children().children('.count').text($('#list_'+Tasks.list_id).children().children('.count').text()-(-1))
@@ -232,13 +223,18 @@ $(->
         return false
   )
   $('.tasklist li .task-due').live(
-    click:
+    change:
       ->
-        $('#task_due').datepicker().show()
-        $(this).hide()
-        $(this).siblings('.task-toggle').after('<input type="text" id="task-edit-due" value="' + $(this).text() + '" />')
-        $('#task-edit-due').data('edited',false).select()
-        return false
+        that=$(this)
+        $.ajax(
+          type:'put'
+          Routes.list_tasks_path(Tasks.list_id,that.parent().parent().attr('taskid'),{format:'json'})
+          { task: {
+            name: that.parent().siblings('.task-name').text(),
+            due: that.val()
+            }
+          }
+        )
   )
   $('.tasklist li .task-toggle').removeAttr('data-method')
   $('.tasklist li .task-toggle').live(
@@ -269,7 +265,7 @@ $(->
         error:->
           
       })
-      $(this).parent().remove()
+      $(this).parent().parent().remove()
       $('#list_'+Tasks.list_id).children().children('.count').text($('#list_'+Tasks.list_id).children().children('.count').text()-1)
       if Tasks.list_id!='all'
         $('#list_all').children().children('.count').text($('#list_all').children().children('.count').text()-1)
@@ -317,34 +313,6 @@ $(->
               Tasks.unedit()
             error: (data) -> alert 'An error occured while saving :(',
           }
-  )
-  $('#task-edit-due').live(
-    focus:
-      ->
-        $('#task_due').hide()
-        $('#btn_new_task').hide()
-        $ -> $('#task-edit-due').datepicker({ 
-          dateFormat: 'yy-mm-dd',
-          onClose: (dateText) ->
-            value=$.datepicker.formatDate('yy-mm-dd', new Date(dateText))
-            elem=$(this)
-            ok=false
-            $.ajax {
-              url: Routes.list_task_path(Tasks.list_id,$(elem).siblings('.task-name').attr('taskid'))
-              type: 'put',
-              data: { task: {due: value }},
-              success: ->
-                ok=true
-                Tasks.unedit_due()
-              error: (data) -> alert 'An error occured while saving :(',
-            }
-            $('#task-edit-due').siblings('.task-due').text($.datepicker.formatDate('d M yy', new Date(dateText)))
-            $('#task-edit-due').siblings('.task-due').attr('date',$.datepicker.formatDate('yy-mm-dd', new Date(dateText)))
-            
-            Tasks.unedit_due()
-        })
-        $('#task-edit-due').datepicker("setDate", new Date($('#task-edit-due').siblings('.task-due').attr('date')) )
-        $('#task-edit-due').datepicker("show")
   )
   $('.task-content').live(
     click:
@@ -417,7 +385,7 @@ $(->
       return false
   )
 
-	$('.sort-list').live(
+  ###	$('.sort-list').live(
     mousemove: (e) ->
       offset = $(this).offset()
       #TODO Fix this
@@ -434,14 +402,14 @@ $(->
           $('#sortpopup').hide() unless $('#sortpopup').data('mouseover')==true
         1000
       )
-  )
+  )###
 	$('#sortpopup a').live(
     click: (e) ->
-      if $(this).attr('val')=='sort_prio'
-        $('#sort-date').text('Priority')
+      $(this).parent().parent().siblings('span').text(I18n.t($(this).attr('val')))
+      if $(this).attr('val')=='sort.priority'
         sort_by='priority'
         direction=true
-      else if $(this).attr('val')=='sort_date'
+      else if $(this).attr('val')=='sort.date'
         sort_by='due'
         direction=false
         $('#sort-date').text('Date')
@@ -465,19 +433,12 @@ $(->
           for task in data
             Tasks.append(task)
       )
-      $('#sortpopup').hide()
       return false
   )
 
-  $('#sortpopup').live(
-    mouseover: ->
-      $(this).data('mouseover',true)
-    mouseleave: ->
-      $(this).hide() unless $(this).data('timer')
-  )
   $('#delete-list').live(
     click:->
-      $('#list_'+Tasks.list_id).remove();
+      $('#list_'+Tasks.list_id).remove()
       href = '/lists/all'
       Tasks.list_id='all'
       list_name='All Lists'

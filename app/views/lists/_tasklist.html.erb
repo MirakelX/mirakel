@@ -21,12 +21,14 @@
     <%= link_to symbol + prio.to_s, '#', class: 'task-priority prio-'+ task.priority.to_s, taskid: task.id %>
     <%= link_to task.name, edit_list_task_path(@list,task), class: 'task-name', taskid: task.id %>
     <% if !task.due.nil?%>
-      <%taskdue=task.due.to_formatted_s(:rfc822)%>
+      <%taskdue=l(task.due)%>
     <%else%>
-      <%taskdue=''%>
+      <%taskdue=' '%>
     <%end%>
-    <%= link_to taskdue, '#', class: 'task-due', taskid: task.id, date: task.due%>
-    <%= link_to t('tasks.delete'), list_task_path(@list,task), method: 'delete', class: 'delete-task' , taskid: task.id%>
+    <span class="right">
+      <input type="text" class="task-due" value="<%=taskdue%>" />
+      <%= link_to t('tasks.delete'), list_task_path(@list,task), method: 'delete', class: 'delete-task' , taskid: task.id%>
+    </span>
     <div class="task-content"><% unless task.content.nil? %><%= simple_format(task.content) %><% else %><i><%= t('tasks.no_task_content') %></i><% end %></div>
     </li>
   <% end%>

@@ -20,10 +20,19 @@
 		&.selected {
 			box-shadow:1px 1px 2px #FFF;
 		}
-    .task-due{
-      left: 75%;
-    }
-		.delete-task {
+		.task-due{
+			left: 75%;
+			background:none;
+			background-image:url(images/famfam/calendar.png);
+			background-repeat:no-repeat;
+			background-position:right;
+			padding-right: 18px;
+			text-align: right;
+			border:0;
+			cursor:pointer;
+			width: 100px;
+		}
+		.right {
 			float:right;
 		}
 		&:hover .task-content{
@@ -60,29 +69,29 @@
 	}
 }
 #priopopup {
-  position: absolute;
-  margin-left: -280px;
-  margin-top: -50px;
-  width: 24px;
-  height: 116px;
-  padding: 0;
-  border: 1px solid black;
-  background-color: #FFF;
-  li {
-	  display:block;
-	  margin: 1px;
-	  cursor: pointer;
-	  a {
-		  color: #FFF;
-		  padding: 1px;
-		  display: block;
-		  width: 20px;
-		  height: 20px;
-	  }
-	  &:hover {
-		  text-decoration: underline;
-	  }
-  }
+	position: absolute;
+	margin-left: -280px;
+	margin-top: -50px;
+	width: 24px;
+	height: 116px;
+	padding: 0;
+	border: 1px solid black;
+	background-color: #FFF;
+	li {
+		display:block;
+		margin: 1px;
+		cursor: pointer;
+		a {
+			color: #FFF;
+			padding: 1px;
+			display: block;
+			width: 20px;
+			height: 20px;
+		}
+		&:hover {
+			text-decoration: underline;
+		}
+	}
 }
 .tasklist,#priopopup {
 	.task-priority {
@@ -106,23 +115,39 @@
 }
 
 .sort-list{
-	background: green;
-	float:right;
+	span {
+		background: green;
+		margin-top:5px;
+		margin-right: 100px;
+		padding: 10px;
+	}
 	margin-top:5px;
-  margin-right: 100px;
-	padding: 10px;
-	
+	float:right;
+	&:hover #sortpopup{
+		display:block;
+	}
+	z-index:999;
+
 }
 #sortpopup
 {
-		background-color: #FFFFFF;
-    border: 1px solid black;
-    height: 40px;
-    margin-left: -250px;
-    padding: 0;
-    position: absolute;
-    width: 75px;
-		list-style-type: none;
+	background-color: #FFFFFF;
+	border: 1px solid black;
+	padding: 0;
+	width: 75px;
+	list-style-type: none;
+	display:block;
+	margin-top:5px;
+	z-index:1000;
+	position:absolute;
+	display:none;
+	.active {
+		background-color:red;
+	}
+	a {
+		display:block;
+		height:100%
+	}
 }
 .new_task{
 	float:left;

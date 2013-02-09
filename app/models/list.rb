@@ -13,7 +13,7 @@
 #
 
 class List < ActiveRecord::Base
-  attr_accessible :name, :user_id
+  attr_accessible :name, :user_id, :sortby
   has_many :tasks, foreign_key: "list_id"
   acts_as_nested_set
 

@@ -8,24 +8,27 @@
     <input type="submit" id='btn_new_task' style="display:none" value=" Absenden ">
 	</form>
 
-	<a class="sort-list" id="sort-date" href="#">Normal</a>	
-	<div id="lists_box">
-  	<%=render partial: 'tasklist' , locals: { tasks: @tasks, name: "undone" }%>
-  	<h3><%= t('tasks.completed') %></h3>
-  	<%=render partial: 'tasklist' , locals: { tasks: @done_tasks, name: "done" }%>
-	</div>
-	<ul id="priopopup" style="display:none">
-  	<li class="prio-2 task-priority"><a href="#" val="2">+2</a></li>
- 		<li class="prio-1 task-priority"><a href="#" val="1">+1</a></li>
-	  <li class="prio-0 task-priority"><a href="#" val="0">&plusmn;0</a></li>
-	  <li class="prio--1 task-priority"><a href="#" val="-1">&minus;1</a></li>
-  	<li class="prio--2 task-priority"><a href="#" val="-2">&minus;2</a></li>
-	</ul>
-	<ul id="sortpopup" style="display:none;">
-		<li class="sort-list-entry"><a href="#" val="sort_prio">Priority</a></li>
-		<li class="sort-list-entry"><a href="#" val="sort_date">Date</a></li>
-    <li class="sort-list-entry"><a href="#" val="sort_normal">Normal</a></li>
-	</ul>
+  <div class="sort-list">
+    <% sorttype="sort.normal" %>
+    <span><%= t(sorttype) %></span>
+    <ul id="sortpopup">
+      <li class="sort-list-entry"><a href="#" val="sort.normal">Normal</a></li>
+      <li class="sort-list-entry"><a href="#" val="sort.priority">Priority</a></li>
+      <li class="sort-list-entry"><a href="#" val="sort.date">Date</a></li>
+    </ul>
+  </div>
+  <div id="lists_box">
+    <%=render partial: 'tasklist' , locals: { tasks: @tasks, name: "undone" }%>
+    <h3><%= t('tasks.completed') %></h3>
+    <%=render partial: 'tasklist' , locals: { tasks: @done_tasks, name: "done" }%>
+  </div>
+  <ul id="priopopup" style="display:none">
+    <li class="prio-2 task-priority"><a href="#" val="2">+2</a></li>
+    <li class="prio-1 task-priority"><a href="#" val="1">+1</a></li>
+    <li class="prio-0 task-priority"><a href="#" val="0">&plusmn;0</a></li>
+    <li class="prio--1 task-priority"><a href="#" val="-1">&minus;1</a></li>
+    <li class="prio--2 task-priority"><a href="#" val="-2">&minus;2</a></li>
+  </ul>
 <%else%>
-	<%=render :text=>"Ungültiger Parameter"%>
+  <%=render :text=>"Ungültiger Parameter"%>
 <%end%>

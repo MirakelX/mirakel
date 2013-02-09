@@ -26,9 +26,9 @@ en:
     no_task_content: 'Click to add a comment'
     delete: 'Delete'
   sort:
-    normal: "Normal"
+    id: "Normal"
     priority: "Priority"
-    date: "Date"
+    due: "Date"
   date:
     formats:
       default: "%Y-%m-%d"

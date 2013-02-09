@@ -1,4 +1,5 @@
 class ListsController < ApplicationController
+  include TasksHelper
   before_filter :authenticate_user!
   # GET /lists
   # GET /lists.json
@@ -13,34 +14,49 @@ class ListsController < ApplicationController
     end
   end
 
+  def getOrder(list)
+    case list.sortby
+    when "priority"
+      return "priority DESC"
+    when "due"
+      return "due DESC"
+    else
+      return "id ASC"
+    end
+  end
   # GET /lists/1
   # GET /lists/1.json
   def show
-		if params[:id]=="all"
-			@tasks=Array.new(1)
-			@done_tasks=Array.new(1)
-			current_user.lists.each do |list|
-				@tasks=@tasks.concat(list.tasks.find_all_by_done(false))
-				@done_tasks=@done_tasks.concat(list.tasks.find_all_by_done(true))
-			end
-			@tasks=@tasks[1..-1]
-			@done_tasks=@done_tasks[1..-1]			
-			@fehler=false
-		else
-			begin
-		  	@list = current_user.lists.find(params[:id])
-				@fehler=false
-		  authorize! :read, @list
-		  @tasks = @list.tasks.find_all_by_done(false)
-		  @done_tasks = @list.tasks.find_all_by_done(true)
-			rescue
-				@fehler=true
-			end
+    if params[:id]=="all"
+      @tasks=Array.new(1)
+      @done_tasks=Array.new(1)
+      current_user.lists.each do |list|
+        @tasks=@tasks.concat(list.tasks.find_all_by_done(false))
+        @done_tasks=@done_tasks.concat(list.tasks.find_all_by_done(true))
+      end
+      @tasks=@tasks[1..-1]
+      @done_tasks=@done_tasks[1..-1]			
+      @fehler=false
+      @sortby='id'
+    else
+      begin
+        @list = current_user.lists.find(params[:id])
+        @fehler=false
+        order=getOrder(@list)
+        puts "*"*500
+        puts order
+        authorize! :read, @list
+        @tasks = @list.tasks.order(order).find_all_by_done(false)
+        @done_tasks = @list.tasks.order(order).find_all_by_done(true)
+        @sortby=@list.sortby
+      rescue
+        @fehler=true
+      end
     end
-		respond_to do |format|
-	    format.html # show.html.erb
-	    format.json { render json: @list }
-		end
+    respond_to do |format|
+      format.html # show.html.erb
+      format.json { render json: @list }
+    end
   end
 
 
@@ -124,5 +140,12 @@ class ListsController < ApplicationController
     move_to=current_user.lists.find(params[:id])
     @list.move_to_child_of(move_to)
     render json: []
+  end
+
+  def changesort
+    @list=current_user.lists.find(params[:list_id])
+    @list.sortby=params[:sort]
+    @list.save
+    render json: [@list]
   end
 end

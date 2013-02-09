@@ -1,12 +1,23 @@
 class TasksController < ApplicationController
   before_filter :authenticate_user!
+  def getOrder(list)
+    case list.sortby
+    when "priority"
+      return "priority DESC"
+    when "due"
+      return "due DESC"
+    else
+      return "id ASC"
+    end
+  end
   def index
 		if params[:list_id]!="all"
     @list= current_user.lists.find params[:list_id]
     respond_to do |format|
       format.html { redirect_to list_path(@list) }
       format.json do
-        @tasks= @list.tasks
+        #@tasks= @list.tasks
+        @tasks = @list.tasks.order(getOrder(@list))
         render json: @tasks
       end
     end

@@ -10,11 +10,11 @@
 
   <div class="sort-list">
     <% sorttype="sort.normal" %>
-    <span><%= t(sorttype) %></span>
+    <span><%= t('sort.'+@sortby) %></span>
     <ul id="sortpopup">
-      <li class="sort-list-entry"><a href="#" val="sort.normal">Normal</a></li>
-      <li class="sort-list-entry"><a href="#" val="sort.priority">Priority</a></li>
-      <li class="sort-list-entry"><a href="#" val="sort.date">Date</a></li>
+      <li class="sort-list-entry"><a href="#" val="id">Normal</a></li>
+      <li class="sort-list-entry"><a href="#" val="priority">Priority</a></li>
+      <li class="sort-list-entry"><a href="#" val="due">Date</a></li>
     </ul>
   </div>
   <div id="lists_box">

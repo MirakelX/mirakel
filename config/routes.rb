@@ -2,6 +2,7 @@ Mirakel::Application.routes.draw do
   resources :lists do
     post 'move_after/:id', action: 'move_after', as: 'move_after'
     post 'move_in/:id', action: 'move_in', as: 'move_in'
+    put :changesort
     resources :tasks do 
       post :toggle_done
     end

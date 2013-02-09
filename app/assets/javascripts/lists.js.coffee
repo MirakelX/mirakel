@@ -145,6 +145,7 @@ $(->
             $('.new-task').attr('placeholder',I18n.t('tasks.add',{list:list_name}))
             $('#new-task').attr('listid',Tasks.list_id)
             $('#new-task').attr('action','/lists/'+Tasks.list_id+'/tasks.json')
+            #$('.sort-list span').text(I18n.t('sort.'+data.sortby))
             for task in data
               Tasks.append(task)
               #console.log task
@@ -385,54 +386,18 @@ $(->
       return false
   )
 
-  ###	$('.sort-list').live(
-    mousemove: (e) ->
-      offset = $(this).offset()
-      #TODO Fix this
-      offset.left-=55
-      offset.top+=25
-      $('#sortpopup').css(offset).show().data({
-        task: $(this)
-        timer: true
-        mouseover: false
-      })
-      setTimeout(
-        ->
-          $('#sortpopup').data('timer',false)
-          $('#sortpopup').hide() unless $('#sortpopup').data('mouseover')==true
-        1000
-      )
-  )###
 	$('#sortpopup a').live(
     click: (e) ->
-      $(this).parent().parent().siblings('span').text(I18n.t($(this).attr('val')))
-      if $(this).attr('val')=='sort.priority'
-        sort_by='priority'
-        direction=true
-      else if $(this).attr('val')=='sort.date'
-        sort_by='due'
-        direction=false
-        $('#sort-date').text('Date')
-      else
-        #console.error 'undefined value'
-        sort_by='id'
-        direction=false
-      href = $(location).attr('href')
-      list_name=$('#list_'+Tasks.list_id).children().children('.name').text()
-      sortBy = (key, a, b, r) ->
-        r = if r then 1 else -1
-        return -1*r if a[key] > b[key]
-        return +1*r if a[key] < b[key]
-        return 0
-      $.getJSON(
-        Routes.list_tasks_path(Tasks.list_id)
-        (data) ->
-          $('.tasklist li').remove()
-          data.sort (a,b) ->
-            sortBy(sort_by,a,b,direction)
-          for task in data
-            Tasks.append(task)
+      $(this).parent().parent().siblings('span').text(I18n.t('sort.'+$(this).attr('val')))
+      $.ajax(
+        type: 'put',
+        url: Routes.list_changesort_path(Tasks.list_id)
+        data: {
+          sort:$(this).attr('val').replace('sort.','')
+        }
       )
+      $('.tasklist').empty()
+      Tasks.update()
       return false
   )
 

@@ -3,30 +3,25 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 div#centered-box{
-	$hight: 150px;
-	$widht: 200px;
+	$height: 300px;
+	$widht: 500px;
 	background: none repeat scroll 0 0 #CCCCCC;
 	border: 1px solid #666;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 1.2em;
 	color: #333;
-	position: absolute;
 	width: $widht;
-	height: $hight;
-	top: 33%;
-	left: 50%;
-	margin-top:-$hight/2;
-	margin-left:-$widht/2;
-	-moz-box-shadow:    3px 3px 5px 6px #ccc;
-  -webkit-box-shadow: 3px 3px 5px 6px #ccc;
+	height: $height;
+  top: 50%;
+  margin-top:-$height/2;
+  padding:10px;
+  margin:auto;
   box-shadow:         3px 3px 5px 6px #ccc;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
 	border-radius: 5px;
 }
 
 div#login_box{
-	$hight: 270px;
+	$height: 270px;
 	$widht: 330px;
 	background: none repeat scroll 0 0 #CCCCCC;
 	border: 1px solid #666;
@@ -35,10 +30,10 @@ div#login_box{
 	color: #333;
 	position: absolute;
 	width: $widht;
-	height: $hight;
+	height: $height;
 	top: 33%;
 	left: 50%;
-	margin-top:-$hight/2;
+	margin-top:-$height/2;
 	margin-left:-$widht/2;
 	-moz-box-shadow:    3px 3px 5px 6px #ccc;
   -webkit-box-shadow: 3px 3px 5px 6px #ccc;

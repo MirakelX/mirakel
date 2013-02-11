@@ -104,7 +104,7 @@ class TasksController < ApplicationController
     respond_to do |format|
       if @task.update_attributes(params[:task])
         format.html { redirect_to @list, notice: I18n.t('tasks.update_success') }
-        format.json { head :no_content }
+        format.json { render json: [] }
       else
         format.html { render action: "edit" }
         format.json { render json: @task.errors, status: :unprocessable_entity }

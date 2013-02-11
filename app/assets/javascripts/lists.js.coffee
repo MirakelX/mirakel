@@ -227,15 +227,17 @@ $(->
     change:
       ->
         that=$(this)
-        $.ajax(
-          type:'put'
-          Routes.list_tasks_path(Tasks.list_id,that.parent().parent().attr('taskid'),{format:'json'})
-          { task: {
+        $.ajax({
+          type:'put',
+          url:Routes.list_task_path(Tasks.list_id,that.parent().parent().attr('taskid'),{format:'json'}),
+          data:{ task: {
             name: that.parent().siblings('.task-name').text(),
             due: that.val()
             }
           }
-        )
+        })
+        return false
+
   )
   $('.tasklist li .task-toggle').removeAttr('data-method')
   $('.tasklist li .task-toggle').live(

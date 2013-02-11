@@ -24,20 +24,40 @@ class ListsController < ApplicationController
       return "id ASC"
     end
   end
-  # GET /lists/1
-  # GET /lists/1.json
-  def show
-    if params[:id]=="all"
+
+  def getByDate(rng)
+      @list=current_user.lists.first()
       @tasks=Array.new(1)
       @done_tasks=Array.new(1)
       current_user.lists.each do |list|
-        @tasks=@tasks.concat(list.tasks.find_all_by_done(false))
-        @done_tasks=@done_tasks.concat(list.tasks.find_all_by_done(true))
+        @tasks=@tasks.concat(list.tasks.where(done: false, due: rng))
+        @done_tasks=@done_tasks.concat(list.tasks.where(done: true, due: rng).limit(50))
       end
       @tasks=@tasks[1..-1]
       @done_tasks=@done_tasks[1..-1]			
       @fehler=false
       @sortby='id'
+  end
+
+  # GET /lists/1
+  # GET /lists/1.json
+  def show
+    case params[:id]
+    when "all"
+      @tasks=Array.new(1)
+      @done_tasks=Array.new(1)
+      current_user.lists.each do |list|
+        @tasks=@tasks.concat(list.tasks.find_all_by_done(false))
+        @done_tasks=@done_tasks.concat(list.tasks.find_all_by_done(true).limit(50))
+      end
+      @tasks=@tasks[1..-1]
+      @done_tasks=@done_tasks[1..-1]			
+      @fehler=false
+      @sortby='id'
+    when "week"
+      getByDate( (Date.new(1)..Date.today()+7))
+    when "today"
+      getByDate( (Date.new(1)..Date.today()))
     else
       begin
         @list = current_user.lists.find(params[:id])

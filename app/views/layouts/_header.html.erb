@@ -20,8 +20,19 @@
 				end	%>
 		<li id="list_all">
 			<%=link_to list_path("all"), listid: 'all' do%>
-		  	<span class="name">All Lists</span>
-		  	<!--<span class="delete">x</span>-->
+        <span class="name"><%=t 'lists.all'%></span>
+		  	<span class="count"><%=task_count %></span>
+			<% end %>
+		</li>
+		<li id="list_week">
+			<%=link_to list_path("week"), listid: 'week' do%>
+        <span class="name"><%= t 'lists.week'%></span>
+		  	<span class="count"><%=task_count %></span>
+			<% end %>
+		</li>
+		<li id="list_today">
+			<%=link_to list_path("today"), listid: 'today' do%>
+        <span class="name"><%=t 'lists.today' %></span>
 		  	<span class="count"><%=task_count %></span>
 			<% end %>
 		</li>

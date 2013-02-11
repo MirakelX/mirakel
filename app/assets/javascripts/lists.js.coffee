@@ -127,7 +127,7 @@ $(->
         list_name=$(this).children('.name').text()
         document.location.href = href unless $('.tasklist').length>0
         window.history.pushState(null, "Page title", Routes.list_path(Tasks.list_id,{format:'html'}))
-        if $(this).attr('listid')=="all" 
+        if $(this).attr('listid') in ["all","week","today"]
           $('#new_task').hide()
           $('#delete-list').hide()
         else 

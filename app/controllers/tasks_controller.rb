@@ -10,27 +10,40 @@ class TasksController < ApplicationController
       return "id ASC"
     end
   end
-  def index
-		if params[:list_id]!="all"
-    @list= current_user.lists.find params[:list_id]
-    respond_to do |format|
-      format.html { redirect_to list_path(@list) }
-      format.json do
-        #@tasks= @list.tasks
-        @tasks = @list.tasks.order(getOrder(@list))
-        render json: @tasks
+  def getByDate(rng)
+      @list=current_user.lists.first()
+      @tasks=Array.new(1)
+      current_user.lists.each do |list|
+        @tasks=@tasks.concat(list.tasks.where(due: rng))
       end
-    end
-		else
+      @tasks=@tasks[1..-1]
+      @fehler=false
+      @sortby='id'
+  end
+  def index
+    case params[:list_id]
+    when "all"
 			@tasks=Array.new(1)
 			current_user.lists.each do |list|
 				@tasks=@tasks.concat(list.tasks)
 			end
-			respond_to do |format|
-    	  format.html {redirect_to list_path("all")}
-    	  format.json { render json: @tasks[1..-1] }
-			end
-		end
+      @tasks=@tasks[1..-1]
+    when "week"
+      getByDate( (Date.new(1)..Date.today()+7))
+    when "today"
+      getByDate( (Date.new(1)..Date.today()))
+    else
+      @list= current_user.lists.find params[:list_id]
+      @tasks = @list.tasks.order(getOrder(@list))
+    end
+
+    respond_to do |format|
+      format.html { redirect_to list_path(@list) }
+      format.json do
+        #@tasks= @list.tasks
+        render json: @tasks
+      end
+    end
   end
   # GET /tasks/1
   # GET /tasks/1.json
@@ -102,46 +115,46 @@ class TasksController < ApplicationController
   # DELETE /tasks/1
   # DELETE /tasks/1.json
   def destroy
-		begin
-	    @list = current_user.lists.find params[:list_id]
-    	@task = @list.tasks.find(params[:id])
-		rescue
-			current_user.lists.each do |list|
-				begin
-					@list=list
-		    	@task = @list.tasks.find(params[:id])
-					break
-				rescue
-				
-				end
-			end
-		end
+    begin
+      @list = current_user.lists.find params[:list_id]
+      @task = @list.tasks.find(params[:id])
+    rescue
+      current_user.lists.each do |list|
+        begin
+          @list=list
+          @task = @list.tasks.find(params[:id])
+          break
+        rescue
+
+        end
+      end
+    end
     #print '*'*50
     authorize! :read, @list
     authorize! :destroy, @task
     @task.destroy
 
     respond_to do |format|
-     # format.html { render :test=>''}#redirect_to list_path(@list) }
+      # format.html { render :test=>''}#redirect_to list_path(@list) }
       format.json { head :no_content }
     end
   end
 
   def init
-		#@task=
-		begin
-    	@list = current_user.lists.find params[:list_id]
-    	@task = @list.tasks.find(params[:id])
-		rescue
-			current_user.lists.each do |list|
-				begin
-					@list=list
-		    	@task = @list.tasks.find(params[:id])
-					break
-				rescue
-				
-				end
-			end
-		end
+    #@task=
+    begin
+      @list = current_user.lists.find params[:list_id]
+      @task = @list.tasks.find(params[:id])
+    rescue
+      current_user.lists.each do |list|
+        begin
+          @list=list
+          @task = @list.tasks.find(params[:id])
+          break
+        rescue
+
+        end
+      end
+    end
   end
 end

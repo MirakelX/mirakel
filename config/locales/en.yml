@@ -16,6 +16,9 @@ en:
     update_success: 'List was successfully updated.'
     delete: "Delete"
     really_delete: "Do you really want to delete the List »%{name}«"
+    all: "All Lists"
+    today: "Today"
+    week: "Week"
   tasks:
     update_success: 'Task was successfully updated.'
     create_success: 'Task was successfully created.'

@@ -48,7 +48,7 @@ class ListsController < ApplicationController
       @done_tasks=Array.new(1)
       current_user.lists.each do |list|
         @tasks=@tasks.concat(list.tasks.find_all_by_done(false))
-        @done_tasks=@done_tasks.concat(list.tasks.find_all_by_done(true).limit(50))
+        @done_tasks=@done_tasks.concat(list.tasks.where(done: true).limit(50))
       end
       @tasks=@tasks[1..-1]
       @done_tasks=@done_tasks[1..-1]			

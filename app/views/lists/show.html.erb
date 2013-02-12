@@ -2,11 +2,11 @@
   <%if params[:id]=="all"%>
     <%style="display:none;"%>
   <%end%>
-	<form method="post" listid="<%=params[:id]%>" id="new_task" class="new_task" action="/lists/<%=params[:id]%>/tasks.json" accept-charset="UTF-8" style="<%=style%>"><div style="margin:0;padding:0;display:inline"><input type="hidden" value="✓" name="utf8"><input type="hidden" value="yghteQphs/MgwSE4StOB+OO0HuNJFG+Q/wVrULlIU60=" name="authenticity_token"></div>
-	  <input type="text" size="30" placeholder="Add task to All Lists" name="task[name]" id="task_name" class="new-task"\>
+  <form method="post" listid="<%=params[:id]%>" id="new_task" class="new_task" action="/lists/<%=params[:id]%>/tasks.json" accept-charset="UTF-8" style="<%=style%>"><div style="margin:0;padding:0;display:inline"><input type="hidden" value="✓" name="utf8"><input type="hidden" value="yghteQphs/MgwSE4StOB+OO0HuNJFG+Q/wVrULlIU60=" name="authenticity_token"></div>
+    <input type="text" size="30" placeholder="Add task to All Lists" name="task[name]" id="task_name" class="new-task"\>
     <input type="text" size="25" placeholder="due-Date" name="task[due]" id="task_due" class="new-task" style="display:none"\>
     <input type="submit" id='btn_new_task' style="display:none" value=" Absenden ">
-	</form>
+  </form>
 
   <div class="sort-list">
     <% sorttype="sort.normal" %>
@@ -19,10 +19,8 @@
   </div>
   <div id="lists_box">
     <%=render partial: 'tasklist' , locals: { tasks: @tasks, name: "undone" }%>
-    <% if @done_tasks %>
-      <h3><%= t('tasks.completed') %></h3>
-      <%=render partial: 'tasklist' , locals: { tasks: @done_tasks, name: "done" }%>
-    <% end %>
+    <h3><%= t('tasks.completed') %></h3>
+    <%=render partial: 'tasklist' , locals: { tasks: @done_tasks, name: "done" }%>
   </div>
   <ul id="priopopup" style="display:none">
     <li class="prio-2 task-priority"><a href="#" val="2">+2</a></li>

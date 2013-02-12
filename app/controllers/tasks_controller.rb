@@ -63,7 +63,10 @@ class TasksController < ApplicationController
     authorize! :update, @task
     @task.done = !@task.done
     @task.save
-    redirect_to list_path(@list)
+    respond_to do |format|
+      format.html {redirect_to list_path(@list)}
+      format.json {render json: []}
+    end
   end
 
   # POST /tasks

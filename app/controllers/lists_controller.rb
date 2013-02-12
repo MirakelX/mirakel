@@ -94,6 +94,7 @@ class ListsController < ApplicationController
   def create
     @list = current_user.lists.build(params[:list])
     authorize! :create, @list
+    @list.sortby='id' unless @list.sortby
 
     respond_to do |format|
       if @list.save

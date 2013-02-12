@@ -25,23 +25,11 @@ class ListsController < ApplicationController
     end
   end
 
-  def getByDate(rng)
-      @list=current_user.lists.first()
-      @tasks=Array.new(1)
-      @done_tasks=Array.new(1)
-      current_user.lists.each do |list|
-        @tasks=@tasks.concat(list.tasks.where(done: false, due: rng))
-        @done_tasks=@done_tasks.concat(list.tasks.where(done: true, due: rng).limit(50))
-      end
-      @tasks=@tasks[1..-1]
-      @done_tasks=@done_tasks[1..-1]			
-      @fehler=false
-      @sortby='id'
-  end
 
   # GET /lists/1
   # GET /lists/1.json
   def show
+    @sortby='id'
     case params[:id]
     when "all"
       @tasks=Array.new(1)
@@ -55,9 +43,12 @@ class ListsController < ApplicationController
       @fehler=false
       @sortby='id'
     when "week"
-      getByDate( (Date.new(1)..Date.today()+7))
+      @list=current_user.lists.first
+      @tasks=Task.getByDate(current_user.lists,(Date.new(1)..Date.today()+7))
     when "today"
-      getByDate( (Date.new(1)..Date.today()))
+      @list=current_user.lists.first
+      @tasks=Task.getByDate(current_user.lists,(Date.new(1)..Date.today()))
+      print @tasks
     else
       begin
         @list = current_user.lists.find(params[:id])

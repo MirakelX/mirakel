@@ -10,16 +10,7 @@ class TasksController < ApplicationController
       return "id ASC"
     end
   end
-  def getByDate(rng)
-      @list=current_user.lists.first()
-      @tasks=Array.new(1)
-      current_user.lists.each do |list|
-        @tasks=@tasks.concat(list.tasks.where(due: rng))
-      end
-      @tasks=@tasks[1..-1]
-      @fehler=false
-      @sortby='id'
-  end
+
   def index
     case params[:list_id]
     when "all"
@@ -29,9 +20,9 @@ class TasksController < ApplicationController
 			end
       @tasks=@tasks[1..-1]
     when "week"
-      getByDate( (Date.new(1)..Date.today()+7))
+      @tasks=Task.getByDate(current_user.lists,(Date.new(1)..Date.today()+7))
     when "today"
-      getByDate( (Date.new(1)..Date.today()))
+      @tasks=Task.getByDate(current_user.lists,(Date.new(1)..Date.today()))
     else
       @list= current_user.lists.find params[:list_id]
       @tasks = @list.tasks.order(getOrder(@list))

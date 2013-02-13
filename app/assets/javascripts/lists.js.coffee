@@ -4,6 +4,9 @@
 
 nl2br= (str)->
   return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br />' + '$2')
+
+static_lists=["all","week","today"]
+
 Lists=
   # Update the Lists–List
   update: ->
@@ -127,7 +130,7 @@ $(->
     list_name=$(this).children('.name').text()
     document.location.href = href unless $('.tasklist').length>0
     window.history.pushState(null, "Page title", Routes.list_path(Tasks.list_id,{format:'html'}))
-    if $(this).attr('listid') in ["all","week","today"]
+    if $(this).attr('listid') in static_lists
       $('#new_task').hide()
       $('#delete-list').hide()
     else 
@@ -153,7 +156,8 @@ $(->
 
   $(document).on "dbclick","#lists li a",->
     # Edit List on Doubleclick 
-    if $(this).attr('listid')!='all'
+    #if $(this).attr('listid')!='all'
+    if $(this).attr('listid') in static_lists
       name_span=$(this).children('.name')
       # Hide link
       $(name_span).hide()
@@ -351,15 +355,37 @@ $(->
 
   $(document).on "click",".sort-list-entry a", ->
     $(this).parent().parent().siblings('span').text(I18n.t('sort.'+$(this).attr('val')))
-    $.ajax(
-      type: 'put',
-      url: Routes.list_changesort_path(Tasks.list_id)
-      data: {
-        sort:$(this).attr('val').replace('sort.','')
-      }
-    )
-    $('.tasklist').empty()
-    Tasks.update()
+    if Tasks.list_id in static_lists
+      sort_by=$(this).attr('val')
+      if sort_by=='priority'
+        direction=true
+      else
+        direction=false
+      sortBy = (key, a, b, r) ->
+        r = if r then 1 else -1
+        console.log a[key]+'||'+b[key]
+        return -1*r if a[key] > b[key]||a[key]==null
+        return +1*r if a[key] < b[key]||b[key]==null
+        return 0
+      $.getJSON(
+        Routes.list_tasks_path(Tasks.list_id)
+        (data) ->
+          $('.tasklist li').remove()
+          data.sort (a,b) ->
+            sortBy(sort_by,a,b,direction)
+          for task in data
+            Tasks.append(task)
+      )
+    else
+      $.ajax(
+        type: 'put',
+        url: Routes.list_changesort_path(Tasks.list_id)
+        data: {
+          sort:$(this).attr('val').replace('sort.','')
+        }
+      )
+      $('.tasklist').empty()
+      Tasks.update()
     return false
 
   $(document).on "click", "#priopopup a", ->

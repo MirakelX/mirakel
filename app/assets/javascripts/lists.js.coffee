@@ -104,12 +104,10 @@ $(->
   Tasks.list_id=$('#new_task').attr('listid')
   Lists.update()
   # Create a new list
-  $('#new-list').live(
-    'click'
-    ->
-      Lists.create()
-      return false
-  )
+  $(document).on "click","#new-list",  ->
+    Lists.create()
+    return false
+
   $('#lists ul').sortable(
     update: (e,ui) ->
       id=$(ui.item).prev().children('a').attr('listid')
@@ -118,293 +116,264 @@ $(->
       $.post(Routes.list_move_after_path($(ui.item).children('a').attr('listid'),id))
   )
 
-  $('#lists li a').live(
+  $(document).on "click","#lists li a",->
     # Redirect only after 500 milliseconds
-    click:
-      ->
-        href = $(this).attr('href')
-        Tasks.list_id=$(this).attr('listid')
-        list_name=$(this).children('.name').text()
-        document.location.href = href unless $('.tasklist').length>0
-        window.history.pushState(null, "Page title", Routes.list_path(Tasks.list_id,{format:'html'}))
-        if $(this).attr('listid') in ["all","week","today"]
-          $('#new_task').hide()
-          $('#delete-list').hide()
-        else 
-          $('#delete-list').show()
-          $('#new_task').show()
-        $.getJSON(
-          Routes.list_tasks_path(Tasks.list_id)
-          (data) ->
-            $('.tasklist li').remove()
-            $('#new_task').attr('action',Routes.list_tasks_path(Tasks.list_id)).attr('listid',Tasks.list_id)
-            $('#delete-list').attr('href',Routes.list_path(Tasks.list_id),{format:'html'}).attr('data-confirm','Do you really want to delete the List »'+list_name+'«')
-            $('.selected').removeClass('selected')
-            $('#list_'+Tasks.list_id).children().children('.count').text(data.length)
-            $('#list_'+Tasks.list_id).addClass('selected')
-            $('.new-task').attr('placeholder',I18n.t('tasks.add',{list:list_name}))
-            $('#new-task').attr('listid',Tasks.list_id)
-            $('#new-task').attr('action','/lists/'+Tasks.list_id+'/tasks.json')
-            #$('.sort-list span').text(I18n.t('sort.'+data.sortby))
-            for task in data
-              Tasks.append(task)
-              #console.log task
-        )
-        return false
-      # Edit List on Doubleclick 
-    dblclick:
-      ->
-        if $(this).attr('listid')!='all'
-          name_span=$(this).children('.name')
+    href = $(this).attr('href')
+    Tasks.list_id=$(this).attr('listid')
+    list_name=$(this).children('.name').text()
+    document.location.href = href unless $('.tasklist').length>0
+    window.history.pushState(null, "Page title", Routes.list_path(Tasks.list_id,{format:'html'}))
+    if $(this).attr('listid') in ["all","week","today"]
+      $('#new_task').hide()
+      $('#delete-list').hide()
+    else 
+      $('#delete-list').show()
+      $('#new_task').show()
+    $.getJSON(
+      Routes.list_tasks_path(Tasks.list_id)
+      (data) ->
+        $('.tasklist li').remove()
+        $('#new_task').attr('action',Routes.list_tasks_path(Tasks.list_id)).attr('listid',Tasks.list_id)
+        $('#delete-list').attr('href',Routes.list_path(Tasks.list_id),{format:'html'}).attr('data-confirm','Do you really want to delete the List »'+list_name+'«')
+        $('.selected').removeClass('selected')
+        $('#list_'+Tasks.list_id).children().children('.count').text(data.length)
+        $('#list_'+Tasks.list_id).addClass('selected')
+        $('.new-task').attr('placeholder',I18n.t('tasks.add',{list:list_name}))
+        $('#new-task').attr('listid',Tasks.list_id)
+        $('#new-task').attr('action','/lists/'+Tasks.list_id+'/tasks.json')
+        #$('.sort-list span').text(I18n.t('sort.'+data.sortby))
+        for task in data
+          Tasks.append(task)
+    )
+    return false
 
-        # Hide link
-          $(name_span).hide()
-          Lists.edit(name_span)
+  $(document).on "dbclick","#lists li a",->
+    # Edit List on Doubleclick 
+    if $(this).attr('listid')!='all'
+      name_span=$(this).children('.name')
+      # Hide link
+      $(name_span).hide()
+      Lists.edit(name_span)
+      # Hide other Input–Fields
+    return false
 
-        # Hide other Input–Fields
-
-        return false
-  )
-  $('#list_edit_input').live(
+  $(document).on "keypress", "#list_edit_input",(e)->
     # Update List–name on Enter
-    keypress:
-      (e) ->
-        $(this).data('edited',true)
-        return true unless e.which == 13
-        value=$(this).val()
-        if value.length>255
-          #TODO better error message
-           alert 'An error occured while saving :('
-        else          
-          $.ajax {
-            url: Paths.list.replace(':id', $(this).parent().attr('id').replace 'list_', ''),
-            type: 'put',
-            data: { list: {name: $(this).val() }},
-            success: ->
-              $(Lists.current_edit).text(value)
-              Lists.unedit()
-            error: (data) -> alert 'An error occured while saving :(',
-          }
-    blur:
-      ->
-        return if $(this).data('edited')
-        Lists.unedit()
-  )
-  $('#new_task').live(
-    blur:
-      ->
-        #$('#task_due').hide()
-        #$('#btn_new_task').hide()
-    submit:
-      ->
-        val=$('#task_name').val()
-        $('#task_name').val('')
-        $('#btn_new_task').hide()
-        #console.log date
-        $.post(
-          Routes.list_tasks_path(Tasks.list_id,{format:'json'})
-          {
-            task: {name: val}
-          }
-          -> Tasks.update()
-        )
-        $('#list_'+Tasks.list_id).children().children('.count').text($('#list_'+Tasks.list_id).children().children('.count').text()-(-1))
-        $('#list_all').children().children('.count').text($('#list_all').children().children('.count').text()-(-1))
-        return false
-  )
-  $('.tasklist input,.tasklist textarea').live(
-    click: -> return false
-  )
-  $('.tasklist li .task-name').live(
-    click:
-      ->
-        $(this).hide()
-        $(this).siblings('.task-toggle').after('<input type="text" id="task-edit-name" value="' + $(this).text() + '" />')
-        $('#task-edit-name').data('edited',false).select()
-        return false
-  )
-  $('.tasklist li .task-due').live(
-    change:
-      ->
-        that=$(this)
-        $.ajax({
-          type:'put',
-          url:Routes.list_task_path(Tasks.list_id,that.parent().parent().attr('taskid'),{format:'json'}),
-          data:{ task: {
-            name: that.parent().siblings('.task-name').text(),
-            due: that.val()
-            }
-          }
-        })
-        return false
+    $(this).data('edited',true)
+    return true unless e.which == 13
+    value=$(this).val()
+    if value.length>255
+      #TODO better error message
+       alert 'An error occured while saving :('
+    else          
+      $.ajax {
+        url: Paths.list.replace(':id', $(this).parent().attr('id').replace 'list_', ''),
+        type: 'put',
+        data: { list: {name: $(this).val() }},
+        success: ->
+          $(Lists.current_edit).text(value)
+          Lists.unedit()
+        error: (data) -> alert 'An error occured while saving :(',
+        }
 
-  )
+  $(document).on "blur", "#list_edit_input",->
+    return if $(this).data('edited')
+    Lists.unedit()
+
+  #TODO Remove or write code
+  #$(document).on "blur", "#new_task",  ->
+    #$('#task_due').hide()
+    #$('#btn_new_task').hide()
+
+  $(document).on "submit", "#new_task",  ->
+    val=$('#task_name').val()
+    $('#task_name').val('')
+    $('#btn_new_task').hide()
+    $.post(
+      Routes.list_tasks_path(Tasks.list_id,{format:'json'})
+      {
+        task: {name: val}
+      }
+      -> Tasks.update()
+    )
+    $('#list_'+Tasks.list_id).children().children('.count').text($('#list_'+Tasks.list_id).children().children('.count').text()-(-1))
+    $('#list_all').children().children('.count').text($('#list_all').children().children('.count').text()-(-1))
+    return false
+  
+  $(document).on "click",".tasklist input,.tasklist textarea", -> 
+    return false
+
+  $(document).on "click",".tasklist li .task-name",->
+    $(this).hide()
+    $(this).siblings('.task-toggle').after('<input type="text" id="task-edit-name" value="' + $(this).text() + '" />')
+    $('#task-edit-name').data('edited',false).select()
+    return false
+  
+  $(document).on "change",".tasklist li .task-due", ->
+    that=$(this)
+    $.ajax({
+      type:'put',
+      url:Routes.list_task_path(Tasks.list_id,that.parent().parent().attr('taskid'),{format:'json'}),
+      data:{ task: {
+        name: that.parent().siblings('.task-name').text(),
+        due: that.val()
+        }
+      }
+    })
+    return false
+
   $('.tasklist li .task-toggle').removeAttr('data-method')
-  $('.tasklist li .task-toggle').live(
-    click: ->
-      $.post(Routes.list_task_toggle_done_path($(this).parent().attr('listid'),$(this).parent().attr('taskid'),{format: 'html'}))
-      if $(this).parent().parent().hasClass('undone')
-        $(this).text('☑')
-        $(this).parent().appendTo('.tasklist.done')
-      else
-        $(this).text('☐')
-        $(this).parent().appendTo('.tasklist.undone')
-      return false
-  )
+
+  $(document).on "click",".tasklist li .task-toggle", ->
+    $.post(Routes.list_task_toggle_done_path($(this).parent().attr('listid'),$(this).parent().attr('taskid'),{format: 'html'}))
+    if $(this).parent().parent().hasClass('undone')
+      $(this).text('☑')
+      $(this).parent().appendTo('.tasklist.done')
+    else
+      $(this).text('☐')
+      $(this).parent().appendTo('.tasklist.undone')
+    return false
+  
   $('.tasklist li .delete-task').removeAttr('data-method')
-  $('.tasklist li .delete-task').live(
-    click: ->
+
+  $(document).on "click",".tasklist li .delete-task", ->
+    href=$(this).attr('href')
+    if (index=href.indexOf '.html')!=-1
+      href=href.substr 0, index
+    href+='.json'
+    $.ajax({
+      url: href
+      type:'delete'
+      dataType: 'json' 
+    })
+    $(this).parent().parent().remove()
+    $('#list_'+Tasks.list_id).children().children('.count').text($('#list_'+Tasks.list_id).children().children('.count').text()-1)
+    if Tasks.list_id!='all'
+      $('#list_all').children().children('.count').text($('#list_all').children().children('.count').text()-1)
+    else
+      #TODO
+    return false        
+
+  $(document).on "click",".tasklist li",->
+    if $(this).data('open')==true
+      $(this).children('.task-content').slideUp()
+      $(this).data('open',false)
+    else
+      $(this).children('.task-content').slideDown()
+      $(this).data('open',true)
+    return false
+  
+  $(document).on "blur","#task-edit-name", ->
+    return if $(this).data('edited')
+    Tasks.unedit()
+
+  $(document).on "click","#task-edit-name", ->
+    return false
+    
+  $(document).on "keypress","#task-edit-name",(e) ->
+    $(this).data('edited',true)
+    return true unless e.which == 13
+    value=$(this).val()
+    if value.length>255
+      #TODO better error message
+      alert 'An error occured while saving :('
+    else
+      elem=$(this)
+      $.ajax {
+        url: Routes.list_task_path(Tasks.list_id,$(elem).siblings('.task-name').attr('taskid'))
+        type: 'put',
+        data: { task: {name: value }},
+        success: ->
+          $(elem).siblings('.task-name').text(value)
+          Tasks.unedit()
+        error: (data) -> alert 'An error occured while saving :(',
+      }
+  
+
+  $(document).on "click",".task-content", ->
+    $('#edit-task').parent().html('<i>'+nl2br $('#edit-task-content').text()+'</i>')
+    $(this).data('text',$(this).text())
+    $(this).html('<div id="edit-task"><textarea id="edit-task-content">' + $(this).text() + '</textarea><br />' +
+      '<input type="button" id="edit-task-content-submit" value="' + I18n.t('tasks.save') + '" />' +
+      '<input type="button" id="edit-task-content-abort" value="' + I18n.t('tasks.abort') + '" /></div>'
+    )
+    $('#edit-task-content').select()
+    $('#edit-task-content-abort').click ->
+      $(this).parent().parent().html(nl2br($(this).parent().parent().data('text')))
+      return false
+
+    $('#edit-task-content-submit').click ->
+      val=$('#edit-task-content').val()
+      val= val.trim()
+      if val.length>255
+        #TODO better error message
+        alert 'An error occured while saving :('
+      else  
+        id=$(this).parent().parent().parent().attr('taskid')
+        elem=$(this)
+        $.ajax {
+          url: Routes.list_task_path($(this).parent().parent().parent().attr('listid'),id)
+          type: 'put',
+          data: { task: {content: val }},
+          success: -> $('#edit-task').parent().html('<i>'+nl2br val+'</i>'),
+          error: (data) -> alert 'An error occured while saving :(',
+        }
+      return false
+    return false
+  
+  $(document).on "mousemove","li .task-priority", ->
+    offset = $(this).offset()
+    $('#priopopup').css(offset).show().data({
+      task: $(this)
+      timer: true
+      mouseover: false
+    })
+    setTimeout(
+      ->
+        $('#priopopup').data('timer',false)
+        $('#priopopup').hide() unless $('#priopopup').data('mouseover')==true
+      1000
+    )
+  
+  $(document).on "mouseover","#priopopup", ->
+    $(this).data('mouseover',true)
+
+  $(document).on "mouseleave","#priopopup", ->
+    $(this).hide() unless $(this).data('timer')
+
+  $(document).on "click",".sort-list-entry a", ->
+    $(this).parent().parent().siblings('span').text(I18n.t('sort.'+$(this).attr('val')))
+    $.ajax(
+      type: 'put',
+      url: Routes.list_changesort_path(Tasks.list_id)
+      data: {
+        sort:$(this).attr('val').replace('sort.','')
+      }
+    )
+    $('.tasklist').empty()
+    Tasks.update()
+    return false
+
+  $(document).on "click", "#priopopup a", ->
+    elem=$('#priopopup').data('task')
+    id=$(elem).parent().attr('taskid')
+    $.ajax(
+      url: Routes.list_task_path($(elem).parent().attr('listid'),id),
+      type: 'PUT',
+      data: {task: { priority: $(this).attr('val') }}
+    )
+    $('#priopopup').hide()
+    $(elem).text($(this).text()).attr('class',$(this).parent().attr('class'))
+    return false
+
+  $('#delete-list').click ->
+    if confirm $(this).attr('data-confirm')
       href=$(this).attr('href')
-      if (index=href.indexOf '.html')!=-1
-        href=href.substr 0, index
-      href+='.json'
-      #console.log href
       $.ajax({
         url: href
         type:'delete'
         dataType: 'json'
-        success: ->
-          
-        error:->
-          
       })
-      $(this).parent().parent().remove()
-      $('#list_'+Tasks.list_id).children().children('.count').text($('#list_'+Tasks.list_id).children().children('.count').text()-1)
-      if Tasks.list_id!='all'
-        $('#list_all').children().children('.count').text($('#list_all').children().children('.count').text()-1)
-      else
-        #TODO
-      return false        
-  )
-
-  $('.tasklist li').live(
-    click:
-      ->
-        if $(this).data('open')==true
-          $(this).children('.task-content').slideUp()
-          $(this).data('open',false)
-        else
-          $(this).children('.task-content').slideDown()
-          $(this).data('open',true)
-        return false
-  )
-  $('#task-edit-name').live(
-    blur:
-      ->
-        return if $(this).data('edited')
-        Tasks.unedit()
-    click:
-      ->
-        return false
-    keypress:
-      (e) ->
-        $(this).data('edited',true)
-        return true unless e.which == 13
-        value=$(this).val()
-        if value.length>255
-          #TODO better error message
-          alert 'An error occured while saving :('
-        else
-          #console.log Tasks.list_id
-          elem=$(this)
-          $.ajax {
-            url: Routes.list_task_path(Tasks.list_id,$(elem).siblings('.task-name').attr('taskid'))
-            type: 'put',
-            data: { task: {name: value }},
-            success: ->
-              $(elem).siblings('.task-name').text(value)
-              Tasks.unedit()
-            error: (data) -> alert 'An error occured while saving :(',
-          }
-  )
-  $('.task-content').live(
-    click:
-      ->
-        #        $(this).hide()
-        $('#edit-task').parent().html('<i>'+nl2br $('#edit-task-content').text()+'</i>')
-        $(this).data('text',$(this).text())
-        $(this).html('<div id="edit-task"><textarea id="edit-task-content">' + $(this).text() + '</textarea><br />' +
-          '<input type="button" id="edit-task-content-submit" value="' + I18n.t('tasks.save') + '" />' +
-          '<input type="button" id="edit-task-content-abort" value="' + I18n.t('tasks.abort') + '" /></div>'
-        )
-        $('#edit-task-content').select()
-        $('#edit-task-content-abort').click(->
-            $(this).parent().parent().html(nl2br($(this).parent().parent().data('text')))
-            return false
-        )
-        $('#edit-task-content-submit').click(->
-          val=$('#edit-task-content').val()
-          val= val.trim()
-          if val.length>255
-            #TODO better error message
-            alert 'An error occured while saving :('
-          else  
-            id=$(this).parent().parent().parent().attr('taskid')
-            elem=$(this)
-            $.ajax {
-              url: Routes.list_task_path($(this).parent().parent().parent().attr('listid'),id)
-              type: 'put',
-              data: { task: {content: val }},
-              success: -> $('#edit-task').parent().html('<i>'+nl2br val+'</i>'),
-              error: (data) -> alert 'An error occured while saving :(',
-            }
-          return false
-        )
-        return false
-  )
-  $('li .task-priority').live(
-    mousemove: (e) ->
-      offset = $(this).offset()
-      $('#priopopup').css(offset).show().data({
-        task: $(this)
-        timer: true
-        mouseover: false
-      })
-      setTimeout(
-        ->
-          $('#priopopup').data('timer',false)
-          $('#priopopup').hide() unless $('#priopopup').data('mouseover')==true
-        1000
-      )
-  )
-  $('#priopopup').live(
-    mouseover: ->
-      $(this).data('mouseover',true)
-    mouseleave: ->
-      $(this).hide() unless $(this).data('timer')
-  )
-  $('#priopopup a').live(
-    click: (e) ->
-      elem=$('#priopopup').data('task')
-      id=$(elem).parent().attr('taskid')
-      $.ajax(
-        url: Routes.list_task_path($(elem).parent().attr('listid'),id),
-        type: 'PUT',
-        data: {task: { priority: $(this).attr('val') }}
-      )
-      $('#priopopup').hide()
-      $(elem).text($(this).text()).attr('class',$(this).parent().attr('class'))
-
-      return false
-  )
-
-	$('#sortpopup a').live(
-    click: (e) ->
-      $(this).parent().parent().siblings('span').text(I18n.t('sort.'+$(this).attr('val')))
-      $.ajax(
-        type: 'put',
-        url: Routes.list_changesort_path(Tasks.list_id)
-        data: {
-          sort:$(this).attr('val').replace('sort.','')
-        }
-      )
-      $('.tasklist').empty()
-      Tasks.update()
-      return false
-  )
-
-  $('#delete-list').live(
-    click:->
       $('#list_'+Tasks.list_id).remove()
       href = '/lists/all'
       Tasks.list_id='all'
@@ -412,6 +381,7 @@ $(->
       document.location.href = href unless $('.tasklist').length>0
       window.history.pushState(null, "Page title", Routes.list_path(Tasks.list_id,{format:'html'}))
       $('#new_task').hide()
+      $(this).hide()
       $.getJSON(
         Routes.list_tasks_path(Tasks.list_id)
         (data) ->
@@ -424,5 +394,6 @@ $(->
           for task in data
             Tasks.append(task)
       )
-  )
+    return false
+  return false
 )

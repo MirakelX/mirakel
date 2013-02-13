@@ -113,7 +113,11 @@ $(->
       id=$(ui.item).prev().children('a').attr('listid')
       if typeof(id)=='undefined'
         id=0
-      $.post(Routes.list_move_after_path($(ui.item).children('a').attr('listid'),id))
+      $.ajax({
+        url:Routes.list_move_after_path($(ui.item).children('a').attr('listid'),id),
+        type:'put'
+      })
+
   )
 
   $(document).on "click","#lists li a",->
@@ -225,7 +229,11 @@ $(->
   $('.tasklist li .task-toggle').removeAttr('data-method')
 
   $(document).on "click",".tasklist li .task-toggle", ->
-    $.post(Routes.list_task_toggle_done_path($(this).parent().attr('listid'),$(this).parent().attr('taskid'),{format: 'html'}))
+    $.ajax({
+      type: 'put',
+      url:Routes.list_task_toggle_done_path($(this).parent().attr('listid'),$(this).parent().attr('taskid'),{format: 'json'})
+      success: -> return
+    })
     if $(this).parent().parent().hasClass('undone')
       $(this).text('☑')
       $(this).parent().appendTo('.tasklist.done')

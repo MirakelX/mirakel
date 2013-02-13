@@ -39,9 +39,11 @@ $sidebar-border-color: #B49044;
   #new-list {
     left:50%;
   }
+  #new-list{
+    border-left:1px solid #000;
+  }
   #delete-list {
     left:0;
-    border-right:1px solid #000;
   }
   #lists {
     margin:0;

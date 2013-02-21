@@ -19,6 +19,11 @@ class List < ActiveRecord::Base
 
   validates :name, presence: true
 
+  before_destroy { |record| 
+    puts "\""*1000; 
+    puts record
+    Task.destroy_all( "list_id=#{record.id}"); 
+  }
   # Creates an JSON-compatible tree
   # Idea from http://stackoverflow.com/questions/9944005/how-to-generate-json-tree-from-ancestry
   def self.json_tree(nodes)

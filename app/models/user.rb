@@ -25,6 +25,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
   after_create :create_dumb
+  before_destroy { |record| List.destroy_all( "user_id=#{record.id}") }
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me
@@ -42,4 +43,5 @@ class User < ActiveRecord::Base
     t.name='Your first task'
     t.save
   end
+
 end

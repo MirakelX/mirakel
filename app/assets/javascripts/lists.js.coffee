@@ -333,7 +333,7 @@ $(->
       return false
     return false
   
-  $(document).on "mousemove","li .task-priority", ->
+  $(document).on "click","li .task-priority", ->
     offset = $(this).offset()
     $('#priopopup').css(offset).show().data({
       task: $(this)
@@ -346,6 +346,7 @@ $(->
         $('#priopopup').hide() unless $('#priopopup').data('mouseover')==true
       1000
     )
+    return false
   
   $(document).on "mouseover","#priopopup", ->
     $(this).data('mouseover',true)
@@ -363,7 +364,6 @@ $(->
         direction=false
       sortBy = (key, a, b, r) ->
         r = if r then 1 else -1
-        console.log a[key]+'||'+b[key]
         return -1*r if a[key] > b[key]||a[key]==null
         return +1*r if a[key] < b[key]||b[key]==null
         return 0

@@ -157,7 +157,6 @@ $(->
   $(document).on "dblclick","#lists li a",->
     # Edit List on Doubleclick 
     #if $(this).attr('listid')!='all'
-    console.log('feoo')
     unless $(this).attr('listid') in static_lists
       name_span=$(this).children('.name')
       # Hide link

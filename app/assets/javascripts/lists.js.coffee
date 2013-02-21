@@ -154,10 +154,11 @@ $(->
     )
     return false
 
-  $(document).on "dbclick","#lists li a",->
+  $(document).on "dblclick","#lists li a",->
     # Edit List on Doubleclick 
     #if $(this).attr('listid')!='all'
-    if $(this).attr('listid') in static_lists
+    console.log('feoo')
+    unless $(this).attr('listid') in static_lists
       name_span=$(this).children('.name')
       # Hide link
       $(name_span).hide()

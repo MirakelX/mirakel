@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'rails', '~>3.2.12'
 gem 'devise'
 gem 'cancan'
-gem 'js-routes'
+gem 'js-routes', '0.8.7'
 gem 'i18n-js'
 gem 'nested_set'
 

@@ -1,3 +1,3 @@
 JsRoutes.setup do |config|
-  config.default_format='json'
+  config.default_url_options={format: 'json'}
 end

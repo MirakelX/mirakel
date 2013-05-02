@@ -9,9 +9,12 @@ Mirakel::Application.routes.draw do
   end
 
   match '/thanks' => 'staticPages#thanks'
+  post '/tokens' => 'Tokens#create'
+  delete '/tokens/:id' => 'Tokens#destroy'
 
 
-  devise_for :users
+  #devise_for :users
+  devise_for :users, :token_authentication_key => 'authentication_key'
 
   root :to => 'staticPages#home'
   # The priority is based upon order of creation:

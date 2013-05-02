@@ -11,17 +11,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130221194315) do
+ActiveRecord::Schema.define(:version => 20130501202007) do
 
   create_table "lists", :force => true do |t|
     t.string   "name"
     t.integer  "user_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
     t.integer  "parent_id"
     t.integer  "lft"
     t.integer  "rgt"
-    t.string   "sortby"
+    t.string   "sortby",     :default => "id"
   end
 
   create_table "tasks", :force => true do |t|
@@ -32,9 +32,6 @@ ActiveRecord::Schema.define(:version => 20130221194315) do
     t.integer  "list_id"
     t.datetime "created_at",                    :null => false
     t.datetime "updated_at",                    :null => false
-    t.integer  "parent_id"
-    t.integer  "lft"
-    t.integer  "rgt"
     t.integer  "priority",   :default => 0
   end
 
@@ -54,8 +51,10 @@ ActiveRecord::Schema.define(:version => 20130221194315) do
     t.string   "sortby_all",             :default => "id"
     t.string   "sortby_week",            :default => "id"
     t.string   "sortby_today",           :default => "id"
+    t.string   "authentication_token"
   end
 
+  add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 

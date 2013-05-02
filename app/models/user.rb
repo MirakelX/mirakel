@@ -16,14 +16,13 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #
-
 class User < ActiveRecord::Base
   has_many :lists, foreign_key: 'user_id'
-  # Include default devise modules. Others available are:
-  # :token_authenticatable, :confirmable,
-  # :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
+  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable,
+    :validatable, :timeoutable, :token_authenticatable 
+
+  before_save :ensure_authentication_token
+
   after_create :create_dumb
   before_destroy { |record| List.destroy_all( "user_id=#{record.id}") }
 
@@ -43,5 +42,6 @@ class User < ActiveRecord::Base
     t.name='Your first task'
     t.save
   end
-
 end
+
+

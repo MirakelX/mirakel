@@ -30,7 +30,13 @@
         <input type="text" class="task-due" value="<%=taskdue%>" />
         <%= link_to t('tasks.delete'), list_task_path(@list,task), method: 'delete', class: 'delete-task' , taskid: task.id%>
       </span>
-      <div class="task-content"><% unless task.content.nil? %><%= simple_format(task.content) %><% else %><i><%= t('tasks.no_task_content') %></i><% end %></div>
+      <div class="task-content">
+        <% unless task.content.nil? %>
+          <%= format(task.content) %>
+        <% else %>
+          <i><%= t('tasks.no_task_content') %></i>
+        <% end %>
+      </div>
       </li>
     <% end%>
   <% end %>

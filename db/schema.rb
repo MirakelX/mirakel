@@ -16,12 +16,12 @@ ActiveRecord::Schema.define(:version => 20130501202007) do
   create_table "lists", :force => true do |t|
     t.string   "name"
     t.integer  "user_id"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
     t.integer  "parent_id"
     t.integer  "lft"
     t.integer  "rgt"
-    t.string   "sortby",     :default => "id"
+    t.string   "sortby"
   end
 
   create_table "tasks", :force => true do |t|
@@ -32,6 +32,9 @@ ActiveRecord::Schema.define(:version => 20130501202007) do
     t.integer  "list_id"
     t.datetime "created_at",                    :null => false
     t.datetime "updated_at",                    :null => false
+    t.integer  "parent_id"
+    t.integer  "lft"
+    t.integer  "rgt"
     t.integer  "priority",   :default => 0
   end
 

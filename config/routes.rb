@@ -11,6 +11,7 @@ Mirakel::Application.routes.draw do
   match '/thanks' => 'staticPages#thanks'
   post '/tokens' => 'Tokens#create'
   delete '/tokens/:id' => 'Tokens#destroy'
+  match '/home' => 'staticPages#home'
 
 
   #devise_for :users

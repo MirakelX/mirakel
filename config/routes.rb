@@ -1,4 +1,7 @@
 Mirakel::Application.routes.draw do
+  resources :tw_users
+
+
   resources :lists do
     put 'move_after/:id', action: 'move_after', as: 'move_after'
     put 'move_in/:id', action: 'move_in', as: 'move_in'

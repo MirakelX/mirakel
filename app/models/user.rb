@@ -21,7 +21,12 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable,
     :validatable, :timeoutable, :token_authenticatable 
 
-  validates :name, presence: true, uniqueness: true
+  validates :name,
+    presence: true,
+    uniqueness: true,
+    format: {with: /^[a-z0-9A-Z_\-]+$/i }
+
+  validates :org, format: {with: /^[a-z0-9A-Z_\-]+$/i }
 
   before_save :ensure_authentication_token
 

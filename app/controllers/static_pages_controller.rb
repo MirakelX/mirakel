@@ -17,11 +17,48 @@ class StaticPagesController < ApplicationController
   def taskdconfig
     @user=current_user
     @user=User.find_by_authentication_token(params[:key]) if params[:key]
+    if @user.nil?
+      render :status => :forbidden, :text => "Forbidden fruit ;)"
+      return
+    end
+    puts "*"*50
+    file=File.read("data/#{@user.name}.#{@user.org}.taskdconfig")
     @path=url_for(controller: "staticPages", action:"taskdconfig", key: @user.authentication_token, dl: true)
+    @tw = {
+      server: "",
+      cert: "",
+      credentials: "",
+      ca: ""
+    }
+    user=""
+    org=""
+    key=""
+    cert=false
+    ca=false
+    for line in file.lines
+      if ca==true
+        @tw[:ca]+=line
+        ca=false if line.start_with? "-----END CERTIFICATE-----"
+      elsif cert == true
+        @tw[:cert]+=line
+        cert=false if line.start_with? "-----END CERTIFICATE-----"
+      else 
+        user=line.sub("username:","").strip        if line.start_with? "username"
+        org=line.sub("org:","").strip              if line.start_with? "org"
+        key=line.sub("user key:","").strip         if line.start_with? "user key"
+        @tw[:server]=line.sub("server:","").strip  if line.start_with? "server"
+        cert=true                                  if line.start_with? "Client.cert"
+        ca=true                                    if line.start_with? "ca.cert"
+      end
+
+    end
+    @tw[:ca]=@tw[:ca].strip
+    @tw[:cert]=@tw[:cert].strip
+    @tw[:credentials]="#{org}/#{user}/#{key}"
     @qr = RQRCode::QRCode.new(@path, level: :l)
 
     if params[:dl]
-      render(:text => File.read("data/#{@user.name}.#{@user.org}.taskdconfig"))
+      render(:text => file)
       return
     end
 

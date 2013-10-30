@@ -1,7 +1,11 @@
 <h1>Hello <%= @user.name %></h1>
+
+<h3>Download config file</h3>
 <p><a href="<%= url_for(controller: "staticPages", action:"taskdconfig", key: @user.authentication_token, dl: true) %>">Download your taskd-config</a></p>
 
-<p>Or scan it with your smartphone:</p>
+<h3>Setup Mirakel</h3>
+
+<p>Open Mirakel → Config → switch sync on → Taskwarrior-sync → scan QR-Code</p>
 
 <table>
  <% @qr.modules.each_index do |x| -%>
@@ -16,6 +20,18 @@
    </tr>
  <% end -%>
 </table>
+
+<h3>Setup taskwarrior</h3>
+
+<pre>
+$ task config taskd.server <%= @tw[:server] %>
+$ task config taskd.credentials <%= @tw[:credentials] %>
+$ echo "<%= @tw[:cert] %>" &gt; ~/.task/client.pem
+$ echo "<%= @tw[:ca] %>" &gt; ~/.task/ca.pem
+$ task config taskd.certificate ~/.task/client.pem
+$ task sync
+</pre>
+
 <style type="text/css">
  table {
   border-width: 0;

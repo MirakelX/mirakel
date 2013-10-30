@@ -1,7 +1,8 @@
 #!/bin/bash
-TASKD=../../src/taskd
-ROOT=$PWD/root
-ROOT_CA=../../pki/ca.cert.pem
+TROOT=/home/azappsde/subdomains/mirakel.azapps.de/data/taskd
+TASKD=$TROOT/src/taskd
+ROOT=$TROOT/demo/server/root
+ROOT_CA=$TROOT/pki/ca.cert.pem
 
 #read username and org from comandline
 read -p "Username?`echo $'\n> '`" USER
@@ -16,9 +17,9 @@ $TASKD add --data $ROOT user --quiet $ORG $USER 1> user.key
 #find configs
 $TASKD config --data $ROOT |grep  '^server ' >server
 
-(cd ../../pki && ./generate.client $ORG$USER)
+(cd $TROOT/pki && ./generate.client $ORG$USER)
 cd $PWD
-cp ../../pki/$ORG$USER.cert.pem $USER.cert
+cp $TROOT/pki/$ORG$USER.cert.pem $USER.cert
 #cat `$TASKD config --data $ROOT |grep  '^client.cert '| sed -e 's/client.cert//'`>client.cert
 
 #if user-config already exists remove it
@@ -37,7 +38,7 @@ cat $ROOT_CA>>$FILENAME
 
 #remove temp-files
 rm -rf user.key server $USER.cert
-rm -f ../../pki/$ORG$USER.cert.pem
+rm -f $TROOT/pki/$ORG$USER.cert.pem
 
 echo 
 echo "You're ready!"

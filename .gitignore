@@ -34,3 +34,5 @@ pickle-email-*.html
 *.lock
 db/*.yml
 **.taskdconfig
+public/*
+data/

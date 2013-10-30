@@ -13,4 +13,12 @@ class ApplicationController < ActionController::Base
       sign_in @user if @user 
     end
   end
+
+  def after_sign_in_path_for(resource)
+    if !current_user.name.nil? && current_user.name.length>0
+      taskdconfig_path
+    else
+      lists_path
+    end
+  end
 end

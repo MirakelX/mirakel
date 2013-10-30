@@ -21,26 +21,23 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable,
     :validatable, :timeoutable, :token_authenticatable 
 
+  validates :name, presence: true, uniqueness: true
+
   before_save :ensure_authentication_token
 
-  after_create :create_dumb
+  before_create :create_dumb
   before_destroy { |record| List.destroy_all( "user_id=#{record.id}") }
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :org, :name
   # attr_accessible :title, :body
   def username
     self.email
   end
 
   def create_dumb
-
-    l=self.lists.new
-    l.name='Inbox'
-    l.save
-    t=l.tasks.new
-    t.name='Your first task'
-    t.save
+    self.org=self.name if self.org==""
+    `echo "#{self.name}\n#{self.org}" |  data/add_user.sh`
   end
 end
 

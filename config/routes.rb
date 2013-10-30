@@ -1,5 +1,4 @@
 Mirakel::Application.routes.draw do
-  resources :tw_users
 
 
   resources :lists do
@@ -15,6 +14,7 @@ Mirakel::Application.routes.draw do
   post '/tokens' => 'Tokens#create'
   delete '/tokens/:id' => 'Tokens#destroy'
   match '/home' => 'staticPages#home'
+  match '/taskdconfig' => 'staticPages#taskdconfig'
 
 
   #devise_for :users

@@ -33,3 +33,4 @@ pickle-email-*.html
 **.swo
 *.lock
 db/*.yml
+**.taskdconfig

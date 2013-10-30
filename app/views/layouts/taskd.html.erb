@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%=full_title yield(:title) %></title>
+    <%= stylesheet_link_tag    "application", :media => "all" %>
+    <%= javascript_include_tag "application" %>
+    <%= csrf_meta_tags %>
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script type="text/javascript">
+      var Paths={
+        lists:"<%= lists_path %>.json",
+        new_list:"<%= new_list_path %>.json",
+        list: "/lists/:id.json"
+              
+      }
+    </script>
+  </head>
+  <body>
+<nav id="user-config">
+<li><%= t 'users.hello', name: @user.username %></li>
+<li><%= link_to t('users.sign_out'), destroy_user_session_path, :method => :delete%></li>
+</ul>
+</li>
+</nav>
+        <%flash.each do |name, msg| %>
+          <%if msg.is_a?(String) %>
+            <div class="alert alert-<%= name %>">
+              <a class="close" data-dismiss="alert">&#215;</a>
+              <%= content_tag :div, msg, :id => "flash_#{name}" %>
+            </div>
+          <%end %>
+        <%end %>
+      <%= yield %>
+  </body>
+</html>

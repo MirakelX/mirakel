@@ -11,17 +11,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131029161249) do
+ActiveRecord::Schema.define(:version => 20131029205439) do
 
   create_table "lists", :force => true do |t|
     t.string   "name"
     t.integer  "user_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
     t.integer  "parent_id"
     t.integer  "lft"
     t.integer  "rgt"
-    t.string   "sortby"
+    t.string   "sortby",     :default => "id"
   end
 
   create_table "tasks", :force => true do |t|
@@ -32,14 +32,12 @@ ActiveRecord::Schema.define(:version => 20131029161249) do
     t.integer  "list_id"
     t.datetime "created_at",                    :null => false
     t.datetime "updated_at",                    :null => false
-    t.integer  "parent_id"
-    t.integer  "lft"
-    t.integer  "rgt"
     t.integer  "priority",   :default => 0
   end
 
   create_table "tw_users", :force => true do |t|
-    t.string   "email"
+    t.string   "user"
+    t.string   "company"
     t.string   "password"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
@@ -62,6 +60,8 @@ ActiveRecord::Schema.define(:version => 20131029161249) do
     t.string   "sortby_week",            :default => "id"
     t.string   "sortby_today",           :default => "id"
     t.string   "authentication_token"
+    t.string   "name"
+    t.string   "org"
   end
 
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token", :unique => true

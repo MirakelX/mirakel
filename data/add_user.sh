@@ -20,6 +20,7 @@ $TASKD config --data $ROOT |grep  '^server ' >server
 (cd $TROOT/pki && ./generate.client $ORG$USER)
 cd $PWD
 cp $TROOT/pki/$ORG$USER.cert.pem $USER.cert
+cat $TROOT/pki/$ORG$USER.key.pem |sed -n '/-----BEGIN RSA PRIVATE KEY-----/,/-----END RSA PRIVATE KEY-----/p' >$USER.key
 #cat `$TASKD config --data $ROOT |grep  '^client.cert '| sed -e 's/client.cert//'`>client.cert
 
 #if user-config already exists remove it
@@ -33,6 +34,8 @@ cat user.key| sed 's/New user key:/user key:/g'>>$FILENAME
 echo "server: "`cat server| sed 's/^server//g'|sed 's/^[ \t]*//'`>>$FILENAME
 echo "Client.cert:">>$FILENAME
 cat $USER.cert>>$FILENAME
+echo "Client.key:">>$FILENAME
+cat $USER.key>>$FILENAME
 echo "ca.cert:">>$FILENAME
 cat $ROOT_CA>>$FILENAME
 

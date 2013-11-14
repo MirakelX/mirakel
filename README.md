@@ -1,3 +1,13 @@
+
+## This project is obsolete. We do not support it anymore. If you are searching Mirakel for Android, please look [here](https://github.com/azapps/mirakel-android)
+
+### In one of the next Mirakel (Android) versions we will stop supporting syncing with Mirakel
+-----
+
+-----
+
+-----
+
 # Mirakel
 
 Mirakel is a free Wunderlist clone.

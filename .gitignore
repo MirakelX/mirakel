@@ -36,3 +36,4 @@ db/*.yml
 **.taskdconfig
 public/*
 data/
+*.key

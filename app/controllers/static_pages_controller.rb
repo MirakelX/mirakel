@@ -59,6 +59,7 @@ class StaticPagesController < ApplicationController
 
     if params[:dl]
       response.headers['Content-Disposition'] = 'attachment; filename=mirakel.taskdconfig'
+      response.headers['Content-Type']='application/force-download'
       render(:text => file)
       return
     end

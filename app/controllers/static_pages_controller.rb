@@ -58,6 +58,7 @@ class StaticPagesController < ApplicationController
     @qr = RQRCode::QRCode.new(@path, level: :l)
 
     if params[:dl]
+      response.headers['Content-Disposition'] = 'attachment; filename=mirakel.taskdconfig'
       render(:text => file)
       return
     end

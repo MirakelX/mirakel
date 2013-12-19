@@ -6,10 +6,10 @@
   <div><%= f.label :email %><br />
   <%= f.email_field :email, :autofocus => true %></div>
 
-  <div><%= f.label :name %><br />
+  <div><%= f.label :name %>(Only alphanumeric signs and "-","_")<br />
   <%= f.text_field :name %></div>
 
-  <div><%= f.label :org %>(optional)<br />
+  <div><%= f.label :org %>(empty or only alphanumeric signs and "-","_")<br />
   <%= f.text_field :org %></div>
 
   <div><%= f.label :password %><br />

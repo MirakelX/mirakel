@@ -8,6 +8,7 @@ gem 'i18n-js'
 gem 'nested_set'
 gem 'thin'
 gem 'rqrcode'
+gem 'unicorn'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'

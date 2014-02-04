@@ -27,8 +27,11 @@
 $ task config taskd.server <%= @tw[:server] %>
 $ task config taskd.credentials <%= @tw[:credentials] %>
 $ echo "<%= @tw[:cert] %>" &gt; ~/.task/client.pem
-$ echo "<%= @tw[:ca] %>" &gt; ~/.task/ca.pem
 $ task config taskd.certificate ~/.task/client.pem
+$ echo "<%= @tw[:ca] %>" &gt; ~/.task/ca.pem
+task config taskd.ca ~/.task/ca.pem
+$ echo "<%= @tw[:key] %>" &gt; ~/.task/client.key.pem
+$ task config taskd.key ~/.task/client.key.pem
 $ task sync
 </pre>
 

@@ -28,13 +28,15 @@ class StaticPagesController < ApplicationController
       server: "",
       cert: "",
       credentials: "",
-      ca: ""
+      ca: "",
+      key: ""
     }
     user=""
     org=""
     key=""
     cert=false
     ca=false
+    key=false
     for line in file.lines
       if ca==true
         @tw[:ca]+=line
@@ -42,6 +44,9 @@ class StaticPagesController < ApplicationController
       elsif cert == true
         @tw[:cert]+=line
         cert=false if line.start_with? "-----END CERTIFICATE-----"
+      elsif key == true
+        @tw[:key]+=line
+        key=false if line.start_with? "-----END"
       else 
         user=line.sub("username:","").strip        if line.start_with? "username"
         org=line.sub("org:","").strip              if line.start_with? "org"
@@ -49,6 +54,7 @@ class StaticPagesController < ApplicationController
         @tw[:server]=line.sub("server:","").strip  if line.start_with? "server"
         cert=true                                  if line.start_with? "Client.cert"
         ca=true                                    if line.start_with? "ca.cert"
+        key=true                                   if line.start_with? "Client.key"
       end
 
     end

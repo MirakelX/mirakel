@@ -1,5 +1,5 @@
 #!/bin/bash
-TROOT=/home/azappsde/subdomains/mirakel.azapps.de/data/taskd
+TROOT=/home/azappsde/subdomains/mirakel/data/taskd
 TASKD=$TROOT/src/taskd
 ROOT=$TROOT/demo/server/root
 ROOT_CA=$TROOT/pki/ca.cert.pem

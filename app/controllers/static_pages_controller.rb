@@ -50,7 +50,7 @@ class StaticPagesController < ApplicationController
       else 
         user=line.sub("username:","").strip        if line.start_with? "username"
         org=line.sub("org:","").strip              if line.start_with? "org"
-        key=line.sub("user key:","").strip         if line.start_with? "user key"
+        user_key=line.sub("user key:","").strip    if line.start_with? "user key"
         @tw[:server]=line.sub("server:","").strip  if line.start_with? "server"
         cert=true                                  if line.start_with? "Client.cert"
         ca=true                                    if line.start_with? "ca.cert"
@@ -60,13 +60,30 @@ class StaticPagesController < ApplicationController
     end
     @tw[:ca]=@tw[:ca].strip
     @tw[:cert]=@tw[:cert].strip
-    @tw[:credentials]="#{org}/#{user}/#{key}"
+    @tw[:credentials]="#{org}/#{user}/#{user_key}"
     @qr = RQRCode::QRCode.new(@path, level: :l)
 
     if params[:dl]
       response.headers['Content-Disposition'] = 'attachment; filename=mirakel.taskdconfig'
       response.headers['Content-Type']='application/force-download'
       render(:text => file)
+      return
+    elsif params[:sh]
+      response.headers['Content-Disposition'] = 'attachment; filename=taskd_setup.sh'
+      response.headers['Content-Type']='application/force-download'
+      render(:text => """#!/bin/bash
+echo \"yes\" | task config taskd.server #{@tw[:server]}
+echo \"yes\" | task config taskd.credentials #{@tw[:credentials]}
+echo \"#{@tw[:cert]}\" > ~/.task/client.pem
+echo \"yes\" | task config taskd.certificate ~/.task/client.pem
+echo \"#{@tw[:ca]}\" > ~/.task/ca.pem
+echo \"yes\" | task config taskd.ca ~/.task/ca.pem
+echo \"#{@tw[:key]}\" > ~/.task/client.key.pem
+echo \"yes\" | task config taskd.key ~/.task/client.key.pem
+task sync
+
+echo \"Have fun. If you like Mirakel, give us some feedback ;)\"
+      """)
       return
     end
 

@@ -22,6 +22,12 @@
 </table>
 
 <h3>Setup taskwarrior</h3>
+<h4>Oneline-setup</h4>
+<pre>
+wget -q -O - "https://mirakel.azapps.de<%= url_for(controller: "staticPages", action:"taskdconfig", key: @user.authentication_token, sh: true) %>" | sh
+</pre>
+
+<h4>Long version</h4>
 
 <pre>
 $ task config taskd.server <%= @tw[:server] %>
@@ -29,7 +35,7 @@ $ task config taskd.credentials <%= @tw[:credentials] %>
 $ echo "<%= @tw[:cert] %>" &gt; ~/.task/client.pem
 $ task config taskd.certificate ~/.task/client.pem
 $ echo "<%= @tw[:ca] %>" &gt; ~/.task/ca.pem
-task config taskd.ca ~/.task/ca.pem
+$ task config taskd.ca ~/.task/ca.pem
 $ echo "<%= @tw[:key] %>" &gt; ~/.task/client.key.pem
 $ task config taskd.key ~/.task/client.key.pem
 $ task sync
